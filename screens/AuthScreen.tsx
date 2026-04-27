@@ -2,15 +2,15 @@ import { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, Alert, ActivityIndicator, KeyboardAvoidingView, Platform } from 'react-native';
 import { supabase } from '../supabase';
 import { COLORES } from '../theme';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function AuthScreen() {
   const [cargando, setCargando] = useState(false);
 
-  // Solo necesitamos el email y la contraseña para entrar
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  // --- FUNCIÓN ÚNICA: INICIAR SESIÓN ---
+  // --- LÓGICA INTACTA ---
   const iniciarSesion = async () => {
     if (!email || !password) {
       Alert.alert('Atención', 'Por favor, introduce tu email y contraseña.');
@@ -24,7 +24,6 @@ export default function AuthScreen() {
         password: password,
       });
       if (error) throw error;
-      // Si va bien, App.tsx lo detectará automáticamente y cambiará la pantalla
     } catch (error: any) {
       Alert.alert('Error al entrar', 'Credenciales incorrectas o usuario no encontrado.');
     } finally {
@@ -32,6 +31,7 @@ export default function AuthScreen() {
     }
   };
 
+  // --- VISTA ACTUALIZADA (ESTILO ZUMO) ---
   return (
     <KeyboardAvoidingView 
       style={styles.contenedor} 
@@ -41,7 +41,7 @@ export default function AuthScreen() {
         <Text style={styles.titulo}>ZUMO</Text>
         
         <TextInput
-          style={styles.input}
+          style={styles.inputInmersivo}
           placeholder="Correo electrónico"
           placeholderTextColor={COLORES.secundario}
           value={email}
@@ -51,25 +51,32 @@ export default function AuthScreen() {
         />
         
         <TextInput
-          style={styles.input}
+          style={styles.inputInmersivo}
           placeholder="Contraseña"
           placeholderTextColor={COLORES.secundario}
           value={password}
           onChangeText={setPassword}
-          secureTextEntry // Oculta la contraseña con puntitos
+          secureTextEntry 
         />
 
-        {/* Botón Principal */}
+        {/* Botón Principal con Degradado Zumo */}
         <TouchableOpacity 
-          style={styles.botonPrincipal} 
           onPress={iniciarSesion}
           disabled={cargando}
+          style={{ marginTop: 15, marginBottom: 25 }}
         >
-          {cargando ? (
-            <ActivityIndicator color="white" />
-          ) : (
-            <Text style={styles.textoBotonPrincipal}>Entrar</Text>
-          )}
+          <LinearGradient
+            colors={[COLORES.primario, COLORES.secundario]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.botonDegradado}
+          >
+            {cargando ? (
+              <ActivityIndicator color="white" />
+            ) : (
+              <Text style={styles.textoBotonPrincipal}>ENTRAR EN ZUMO</Text>
+            )}
+          </LinearGradient>
         </TouchableOpacity>
 
         {/* Mensaje de exclusividad */}
@@ -81,6 +88,7 @@ export default function AuthScreen() {
   );
 }
 
+// --- ESTILOS ACTUALIZADOS ---
 const styles = StyleSheet.create({
   contenedor: { 
     flex: 1, 
@@ -89,45 +97,38 @@ const styles = StyleSheet.create({
     padding: 20 
   },
   cajaFormulario: { 
-    backgroundColor: COLORES.tarjeta, 
-    padding: 25, 
-    borderRadius: 20, 
+    // Quitamos el color de tarjeta para que se funda con el fondo, estilo inmersivo
+    padding: 20, 
     width: '100%', 
-    shadowColor: '#000', 
-    shadowOffset: { width: 0, height: 4 }, 
-    shadowOpacity: 0.3, 
-    shadowRadius: 5 
   },
   titulo: { 
-    fontSize: 32, 
+    fontSize: 40, 
     fontWeight: '900', 
     color: COLORES.textoBlanco, 
-    marginBottom: 30, 
+    marginBottom: 40, 
     textAlign: 'center',
-    letterSpacing: 2
+    letterSpacing: 4
   },
-  input: { 
-    backgroundColor: COLORES.fondo, 
+  inputInmersivo: { 
+    backgroundColor: COLORES.tarjeta, // Fondo gris oscuro
     color: COLORES.textoBlanco, 
-    padding: 15, 
-    borderRadius: 10, 
+    padding: 18, 
+    borderRadius: 20, // Bordes muy redondeados (juvenil)
     marginBottom: 15, 
     fontSize: 16, 
     borderWidth: 1, 
-    borderColor: '#3d4653' 
+    borderColor: COLORES.borde 
   },
-  botonPrincipal: { 
-    backgroundColor: COLORES.primario, 
-    padding: 15, 
-    borderRadius: 10, 
+  botonDegradado: { 
+    padding: 18, 
+    borderRadius: 30, // Botón en forma de píldora
     alignItems: 'center', 
-    marginTop: 10,
-    marginBottom: 20 
   },
   textoBotonPrincipal: { 
     color: 'white', 
-    fontSize: 18, 
-    fontWeight: 'bold' 
+    fontSize: 16, 
+    fontWeight: '900', // Letra gordita
+    letterSpacing: 1
   },
   textoExclusivo: { 
     color: COLORES.secundario, 
