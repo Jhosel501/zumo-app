@@ -1,9 +1,10 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { COLORES } from '../theme';
+import { Ionicons } from '@expo/vector-icons';
 
 // Este componente es el menú inferior que te permite navegar entre las vistas principales de la app
 interface FooterProps {
-  vistaActual: 'feed' | 'ranking' | 'camara' | 'perfil' | 'perfilPublico' | 'fotoDetalle' | string;
+  vistaActual: 'feed' | 'ranking' | 'camara' | 'perfil'| 'search' | 'perfilPublico' | 'fotoDetalle' | string;
   setVistaActual: (vista: any) => void;
 }
 
@@ -26,6 +27,10 @@ export default function Footer({ vistaActual, setVistaActual }: FooterProps) {
         <Text style={[styles.textoFooter, vistaActual === 'camara' && styles.textoFooterActivo]}>
           📸
         </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.botonFooter} onPress={() => setVistaActual('search')}>
+        <Ionicons name="search-outline" size={28} color={COLORES.secundario} />
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.botonFooter} onPress={() => setVistaActual('perfil')}>

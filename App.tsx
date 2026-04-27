@@ -14,10 +14,12 @@ import ProfileScreen from './screens/ProfileScreen';
 import FeedScreen from './screens/FeedScreen';
 import PublicProfileScreen from './screens/PublicProfileScreen';
 import SinglePostScreen from './screens/SinglePostScreen';
+import SearchScreen from './screens/SearchScreen';
+
 
 export default function App() {
   const [permiso, pedirPermiso] = useCameraPermissions();
-  const [vistaActual, setVistaActual] = useState<'feed' | 'ranking' | 'camara' | 'perfil' | 'perfilPublico' | 'fotoDetalle'>('feed'); //Cambiar si se añade nueva vista accesible desde el footer
+  const [vistaActual, setVistaActual] = useState<'feed' | 'ranking' | 'camara' |'search'| 'perfil' | 'perfilPublico' | 'fotoDetalle'>('feed'); //Cambiar si se añade nueva vista accesible desde el footer
   
   // Variables para recordar a quién visitamos y de dónde venimos
   const [usuarioVisitado, setUsuarioVisitado] = useState<string | null>(null);
@@ -45,6 +47,7 @@ export default function App() {
     setVistaAnteriorFoto(origen);
     setVistaActual('fotoDetalle');
   };
+  
 
   // --- Cargador de Fuentes ---
   const [fuentesCargadas] = useFonts({

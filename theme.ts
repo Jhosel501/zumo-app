@@ -2,20 +2,20 @@
 
 export const COLORES = {
   // Colores principales de fondo
-  fondo: '#121212',      // El negro profundo de tu web (antes era azulado)
-  tarjeta: '#1A1A1A',    // Un gris muy oscuro elegante para las tarjetas
+  fondo: '#08080A',      // El negro profundo extraído de tu --fondo
+  tarjeta: '#1A1A1A',    // Mantenemos el gris oscuro para las tarjetas (.tarjeta-descarga)
   
-  // Colores de acento y marca
-  primario: '#FF7E00',   // Naranja Zumo oficial (reemplaza al rojo)
-  secundario: '#999999', // Gris apagado para textos secundarios
-  acento: '#E02C73',     // El rosa/fucsia del degradado (para el #1, éxitos, etc.)
+  // Colores de acento y marca (Extraídos de tu --zumo-gradient)
+  primario: '#FF5B37',   // El color principal de tu degradado y botones
+  secundario: '#666670', // Extraído de tu --texto-dim para textos secundarios
+  acento: '#E93E71',     // El color central de tu degradado (rosa/fucsia)
   
   // Textos y nuevos colores para los inputs
-  textoBlanco: '#ffffff',
+  textoBlanco: '#FFFFFF', // Extraído de tu --texto
   textoOscuro: '#000000',
-  inputFondo: '#1A1A1A', // Fondo inmersivo para los campos de texto
-  borde: '#333333',      // Bordes sutiles para las tarjetas
-  error: '#FF4444',
+  inputFondo: 'transparent', // En tu CSS .input-inmersivo usa background: transparent
+  borde: '#222222',      // Extraído del border-bottom de tus inputs en la web
+  error: '#FF5B37',      // Extraído de tu --error
 };
 
 export const FUENTES = {
@@ -33,7 +33,7 @@ export const ESPACIADOS = {
   gigante: 30,
 };
 
-// Añadimos una nueva constante para los bordes súper redondeados
+// Ajustado al CSS de la web
 export const BORDES = {
-  radio: 20, // Para usarlo en borderRadius de botones y tarjetas
+  radio: 16, // Cambiado a 16 para igualar el border-radius de tu .boton-join en la web
 };

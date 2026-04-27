@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, TextInput, TouchableOpacity, Alert, ActivityInd
 import { supabase } from '../supabase';
 import { COLORES } from '../theme';
 import { LinearGradient } from 'expo-linear-gradient';
+import MaskedView from '@react-native-masked-view/masked-view';
 
 export default function AuthScreen() {
   const [cargando, setCargando] = useState(false);
@@ -38,7 +39,17 @@ export default function AuthScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <View style={styles.cajaFormulario}>
-        <Text style={styles.titulo}>ZUMO</Text>
+        <MaskedView
+          style={styles.contenedorTitulo}
+          maskElement={<Text style={styles.titulo}>ZUMO</Text>}
+        >
+          <LinearGradient
+            colors={['#FF5B37', '#E93E71']} // Tus dos pantones solicitados
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={{ flex: 1 }}
+          />
+        </MaskedView>
         
         <TextInput
           style={styles.inputInmersivo}
@@ -66,15 +77,18 @@ export default function AuthScreen() {
           style={{ marginTop: 15, marginBottom: 25 }}
         >
           <LinearGradient
-            colors={[COLORES.primario, COLORES.secundario]}
+            // INYECTAMOS LOS 3 PANTONES EXACTOS DEL CSS DE TU WEB
+            //degradado de 3 colores con un ángulo de 135 grados (#FF5B37 naranja, pasando por #E93E71 fucsia y terminando en #9D38D3 morado)
+            colors={['#FF5B37', '#E93E71', '#9D38D3']}
+            // SIMULAMOS LOS 135 GRADOS (De la esquina superior izquierda a la inferior derecha)
             start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
+            end={{ x: 1, y: 1 }}
             style={styles.botonDegradado}
           >
             {cargando ? (
               <ActivityIndicator color="white" />
             ) : (
-              <Text style={styles.textoBotonPrincipal}>ENTRAR EN ZUMO</Text>
+              <Text style={styles.textoBotonPrincipal}>ENTRAR</Text>
             )}
           </LinearGradient>
         </TouchableOpacity>
@@ -101,13 +115,18 @@ const styles = StyleSheet.create({
     padding: 20, 
     width: '100%', 
   },
+  contenedorTitulo: {
+    height: 60,       // Ajustamos la altura para que el texto no se corte
+    marginBottom: 40,
+    width: '100%',
+  },
   titulo: { 
-    fontSize: 40, 
+    fontSize: 45,      // Un pelín más grande para que luzca el degradado
     fontWeight: '900', 
-    color: COLORES.textoBlanco, 
-    marginBottom: 40, 
+    color: 'black',    // El color del mask debe ser sólido (no importa cuál)
     textAlign: 'center',
-    letterSpacing: 4
+    letterSpacing: 4,
+    backgroundColor: 'transparent',
   },
   inputInmersivo: { 
     backgroundColor: COLORES.tarjeta, // Fondo gris oscuro

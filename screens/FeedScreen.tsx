@@ -2,6 +2,8 @@ import { View, Text, FlatList, ActivityIndicator, StyleSheet, RefreshControl } f
 import { COLORES } from '../theme';
 import TarjetaPost from '../components/TarjetaPost';
 import PodioFeed from '../components/PodioFeed';
+import MaskedView from '@react-native-masked-view/masked-view';
+import { LinearGradient } from 'expo-linear-gradient';
 
 interface FeedProps {
   listaFeed: any[];
@@ -26,7 +28,17 @@ export default function FeedScreen({
   return (
     <View style={styles.contenedor}>
       <View style={styles.header}>
-        <Text style={styles.tituloHeader}>Zaragoza</Text>
+        <MaskedView
+          style={styles.contenedorTitulo}
+          maskElement={<Text style={styles.tituloHeader}>ZUMO</Text>}
+        >
+          <LinearGradient
+            colors={['#FF5B37', '#E93E71']} // Tus dos pantones exactos
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={{ flex: 1 }}
+          />
+        </MaskedView>
       </View>
 
       {cargandoFeed ? (
@@ -78,6 +90,25 @@ export default function FeedScreen({
 // Solo dejamos los estilos generales de la pantalla
 const styles = StyleSheet.create({
   contenedor: { flex: 1, backgroundColor: COLORES.fondo },
-  header: { height: 60, justifyContent: 'flex-end', alignItems: 'center', paddingBottom: 10, borderBottomWidth: 1, borderBottomColor: COLORES.tarjeta },
-  tituloHeader: { fontSize: 22, fontWeight: 'bold', color: COLORES.textoBlanco },
+  header: { 
+    height: 60, 
+    justifyContent: 'flex-end', 
+    alignItems: 'center', 
+    paddingBottom: 10, 
+    borderBottomWidth: 1, 
+    borderBottomColor: COLORES.tarjeta 
+  },
+  // Le damos un ancho y alto fijos al contenedor para que el degradado se pinte bien
+  contenedorTitulo: {
+    height: 28, 
+    width: 100, 
+  },
+  tituloHeader: { 
+    fontSize: 22, 
+    fontWeight: '900', // Letra extra gruesa para que luzca el color
+    color: 'black',    // Obligatorio para que la máscara funcione bien
+    letterSpacing: 2,  // Un poco de espacio entre letras para darle toque moderno
+    textAlign: 'center',
+    backgroundColor: 'transparent'
+  },
 });
