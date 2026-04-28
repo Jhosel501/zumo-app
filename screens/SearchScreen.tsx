@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet, Platform, ActivityIndicator, Image } from 'react-native';
-import { Ionicons } from '@expo/vector-icons'; 
+import { Ionicons } from '@expo/vector-icons';
 import { COLORES, FUENTES } from '../theme';
 import { supabase } from '../supabase';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+type Perfil = { id: string; username: string; avatar_url: string | null };
+
 export default function SearchScreen({ onPressUser }: { onPressUser: (id: string) => void }) {
   const [busqueda, setBusqueda] = useState('');
-  const [resultados, setResultados] = useState<any[]>([]);
+  const [resultados, setResultados] = useState<Perfil[]>([]);
   const [cargando, setCargando] = useState(false);
 
   useEffect(() => {
@@ -23,9 +25,10 @@ export default function SearchScreen({ onPressUser }: { onPressUser: (id: string
       try {
         const { data, error } = await supabase
           .from('perfiles')
-          .select('id, username, avatar_url') // Traemos el avatar_url
+          .select('id, username, avatar_url')
           .ilike('username', `%${queryLimpia}%`)
-          .limit(15);
+          .is('deleted_at', null)
+          .limit(20);
 
         if (error) throw error;
         setResultados(data || []);
@@ -64,25 +67,23 @@ export default function SearchScreen({ onPressUser }: { onPressUser: (id: string
           keyExtractor={(item) => item.id}
           contentContainerStyle={{ padding: 20 }}
           renderItem={({ item }) => (
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.tarjetaUsuario}
-              onPress={() => onPressUser(item.id)} // Ahora funcionará perfectamente
+              onPress={() => onPressUser(item.id)}
             >
               <View style={styles.avatarCircular}>
-                {/* SI HAY URL DE AVATAR, MOSTRAMOS LA IMAGEN */}
                 {item.avatar_url ? (
-                  <Image 
-                    source={{ uri: item.avatar_url }} 
-                    style={styles.imagenAvatar} 
+                  <Image
+                    source={{ uri: item.avatar_url }}
+                    style={styles.imagenAvatar}
                   />
                 ) : (
-                  /* SI NO HAY, MOSTRAMOS LA LETRA COMO ANTES */
                   <Text style={styles.letraAvatar}>
                     {item.username ? item.username.charAt(0).toUpperCase() : '?'}
                   </Text>
                 )}
               </View>
-              
+
               <View style={styles.infoUsuario}>
                 <Text style={styles.username}>@{item.username}</Text>
               </View>
@@ -107,26 +108,26 @@ const styles = StyleSheet.create({
   iconoLupa: { marginRight: 10 },
   input: { flex: 1, color: COLORES.textoBlanco, fontSize: 16 },
   tarjetaUsuario: { flexDirection: 'row', alignItems: 'center', marginBottom: 20 },
-  avatarCircular: { 
-    width: 50, 
-    height: 50, 
-    borderRadius: 25, 
-    backgroundColor: '#222', 
-    justifyContent: 'center', 
-    alignItems: 'center', 
-    marginRight: 15, 
-    borderWidth: 1, 
+  avatarCircular: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: '#222',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 15,
+    borderWidth: 1,
     borderColor: COLORES.borde,
-    overflow: 'hidden' // Importante para que la imagen no se salga del círculo
+    overflow: 'hidden',
   },
   imagenAvatar: {
     width: '100%',
     height: '100%',
-    resizeMode: 'cover'
+    resizeMode: 'cover',
   },
   letraAvatar: { color: COLORES.primario, fontSize: 20, fontWeight: '900' },
   infoUsuario: { justifyContent: 'center' },
   username: { color: COLORES.textoBlanco, fontSize: 16, fontWeight: 'bold', marginBottom: 3 },
   nombreReal: { color: COLORES.secundario, fontSize: 14 },
-  textoVacio: { color: COLORES.secundario, textAlign: 'center', marginTop: 40, fontSize: 16 }
+  textoVacio: { color: COLORES.secundario, textAlign: 'center', marginTop: 40, fontSize: 16 },
 });
