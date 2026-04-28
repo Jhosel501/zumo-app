@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator, Image, KeyboardAvoidingView, Platform, ScrollView, RefreshControl, Share } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator, Image, KeyboardAvoidingView, Platform, ScrollView, RefreshControl, Share, Modal } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { supabase } from '../supabase';
 import { COLORES } from '../theme';
@@ -32,6 +32,12 @@ export default function ProfileScreen({ session, onPressFoto }: ProfileProps) {
 
   const [misFotos, setMisFotos] = useState<any[]>([]);
   const [cargandoFotos, setCargandoFotos] = useState(false);
+
+  const [telefonoOriginal, setTelefonoOriginal] = useState('');
+  const [telefonoParaVerificar, setTelefonoParaVerificar] = useState('');
+  const [mostrarModalOTP, setMostrarModalOTP] = useState(false);
+  const [codigoOTP, setCodigoOTP] = useState('');
+  const [verificando, setVerificando] = useState(false);
 
   const cargarInvitacion = async () => {
     try {
@@ -103,6 +109,7 @@ export default function ProfileScreen({ session, onPressFoto }: ProfileProps) {
       if (perfilData) {
         setUsername(perfilData.username || '');
         setTelefono(perfilData.telefono || '');
+        setTelefonoOriginal(perfilData.telefono || '');
         setAvatarUrl(perfilData.avatar_url || null);
       }
       if (rankingData) setTotalZumos(rankingData.total_zumos || 0);
@@ -165,16 +172,63 @@ export default function ProfileScreen({ session, onPressFoto }: ProfileProps) {
     }
   };
 
+  const normalizarTelefono = (tel: string): string => {
+    const limpio = tel.replace(/[\s\-().]/g, '');
+    if (limpio.startsWith('+')) return limpio;
+    if (limpio.startsWith('0034')) return '+34' + limpio.slice(4);
+    if (/^[679]/.test(limpio)) return '+34' + limpio;
+    return limpio;
+  };
+
   const guardarCambios = async () => {
     setGuardando(true);
     try {
-      await supabase.from('perfiles').update({ username: username.toLowerCase().trim(), telefono: telefono }).eq('id', session.user.id);
-      Alert.alert('Éxito', 'Perfil actualizado.');
-      setVistaInterna('perfil');
+      await supabase.from('perfiles')
+        .update({ username: username.toLowerCase().trim() })
+        .eq('id', session.user.id);
+
+      const telefonoNormalizado = normalizarTelefono(telefono.trim());
+      const telefonoNormalizadoOriginal = normalizarTelefono(telefonoOriginal.trim());
+
+      if (telefono.trim() && telefonoNormalizado !== telefonoNormalizadoOriginal) {
+        const { error } = await supabase.auth.updateUser({ phone: telefonoNormalizado });
+        if (error) throw error;
+        setTelefonoParaVerificar(telefonoNormalizado);
+        setMostrarModalOTP(true);
+      } else {
+        Alert.alert('Éxito', 'Perfil actualizado.');
+        setVistaInterna('perfil');
+      }
     } catch (error: any) {
       Alert.alert('Error al guardar', error.message);
     } finally {
       setGuardando(false);
+    }
+  };
+
+  const verificarOTP = async () => {
+    setVerificando(true);
+    try {
+      const { error } = await supabase.auth.verifyOtp({
+        phone: telefonoParaVerificar,
+        token: codigoOTP,
+        type: 'phone_change',
+      });
+      if (error) throw error;
+
+      await supabase.from('perfiles')
+        .update({ telefono: telefonoParaVerificar })
+        .eq('id', session.user.id);
+
+      setTelefonoOriginal(telefonoParaVerificar);
+      setMostrarModalOTP(false);
+      setCodigoOTP('');
+      Alert.alert('Éxito', 'Teléfono verificado correctamente.');
+      setVistaInterna('perfil');
+    } catch (error: any) {
+      Alert.alert('Código incorrecto', error.message);
+    } finally {
+      setVerificando(false);
     }
   };
 
@@ -208,6 +262,40 @@ export default function ProfileScreen({ session, onPressFoto }: ProfileProps) {
             <Text style={styles.textoBotonSalir}>Cerrar Sesión</Text>
           </TouchableOpacity>
         </ScrollView>
+
+        <Modal visible={mostrarModalOTP} transparent animationType="fade">
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalCard}>
+              <Text style={styles.modalTitulo}>Verificar teléfono</Text>
+              <Text style={styles.modalSubtitulo}>
+                Hemos enviado un código SMS a {telefonoParaVerificar}
+              </Text>
+              <TextInput
+                style={styles.inputOTP}
+                value={codigoOTP}
+                onChangeText={setCodigoOTP}
+                keyboardType="number-pad"
+                maxLength={6}
+                placeholder="000000"
+                placeholderTextColor={COLORES.secundario}
+                autoFocus
+              />
+              <TouchableOpacity
+                style={[styles.botonVerificar, codigoOTP.length < 6 && { opacity: 0.5 }]}
+                onPress={verificarOTP}
+                disabled={verificando || codigoOTP.length < 6}
+              >
+                {verificando
+                  ? <ActivityIndicator color="white" />
+                  : <Text style={styles.textoBotonGuardar}>Verificar</Text>
+                }
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => { setMostrarModalOTP(false); setCodigoOTP(''); }}>
+                <Text style={styles.textoCancelarModal}>Cancelar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
       </KeyboardAvoidingView>
     );
   }
@@ -249,5 +337,12 @@ const styles = StyleSheet.create({
   botonGuardar: { backgroundColor: COLORES.primario, padding: 15, borderRadius: 10, alignItems: 'center', marginTop: 10 },
   textoBotonGuardar: { color: 'white', fontSize: 16, fontWeight: 'bold' },
   botonSalir: { backgroundColor: 'transparent', padding: 15, borderRadius: 10, alignItems: 'center', marginTop: 20, borderWidth: 1, borderColor: COLORES.secundario },
-  textoBotonSalir: { color: COLORES.secundario, fontSize: 16, fontWeight: 'bold' }
+  textoBotonSalir: { color: COLORES.secundario, fontSize: 16, fontWeight: 'bold' },
+  modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.75)', justifyContent: 'center', alignItems: 'center', padding: 30 },
+  modalCard: { backgroundColor: COLORES.tarjeta, borderRadius: 16, padding: 25, width: '100%' },
+  modalTitulo: { color: COLORES.textoBlanco, fontSize: 20, fontWeight: 'bold', marginBottom: 10, textAlign: 'center' },
+  modalSubtitulo: { color: COLORES.secundario, fontSize: 14, marginBottom: 25, textAlign: 'center' },
+  inputOTP: { backgroundColor: COLORES.fondo, color: COLORES.textoBlanco, padding: 15, borderRadius: 10, marginBottom: 20, fontSize: 28, textAlign: 'center', letterSpacing: 10 },
+  botonVerificar: { backgroundColor: COLORES.primario, padding: 15, borderRadius: 10, alignItems: 'center', marginBottom: 15 },
+  textoCancelarModal: { color: COLORES.secundario, textAlign: 'center', fontSize: 15 },
 });
