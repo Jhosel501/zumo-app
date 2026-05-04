@@ -42,10 +42,9 @@ export default function ProfileScreen({ session, onPressFoto }: ProfileProps) {
         .single();
         
       if (data) {
-        console.log("¡Invitación encontrada!", data); // 👈 EL CHIVATO
         setInvitacion({ codigo: data.codigo, usos: data.usos_restantes });
       } else {
-        console.log("No encontró nada. Error:", error); // 👈 EL CHIVATO
+        console.log("No encontró nada. Error:", error);
       }
     } catch (error) {
       console.log("Error en la consulta:", error);
@@ -76,7 +75,7 @@ export default function ProfileScreen({ session, onPressFoto }: ProfileProps) {
   const onRefresh = async () => {
     setRefreshing(true);
     await cargarPerfil();
-    await cargarInvitacion(); // 👈 Añade esto
+    await cargarInvitacion();
     setRefreshing(false);
   };
 

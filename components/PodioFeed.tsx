@@ -48,7 +48,7 @@ export default function PodioFeed({ listaRanking }: PodioProps) {
 
   return (
     <View style={styles.contenedorPodio}>
-      <Text style={styles.tituloPodio}>👑 Top</Text>
+      {/* <Text style={styles.tituloPodio}>👑 Top</Text> */}
       <View style={styles.basePodio}>
         {/* El orden visual del podio: Izquierda(2), Centro(1), Derecha(3) */}
         {renderEscalon(plata, 2, '#c0c0c0', 65)}
@@ -62,7 +62,7 @@ export default function PodioFeed({ listaRanking }: PodioProps) {
 
 const styles = StyleSheet.create({
   contenedorPodio: {
-    paddingTop: 15,
+    paddingTop: 20,
     backgroundColor: COLORES.fondo,
     alignItems: 'center',
   },

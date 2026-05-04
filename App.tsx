@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, SafeAreaView, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, ActivityIndicator, StatusBar } from 'react-native';
 import { useCameraPermissions } from 'expo-camera';
 import { supabase } from './supabase';
 import { COLORES } from './theme';
 import { useFonts } from 'expo-font';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+
 
 // Importamos tus componentes y pantallas
 import Footer from './components/Footer';
@@ -119,7 +121,7 @@ export default function App() {
 
   const cargarFeed = async (resetear = false) => {
 
-    // ESCUDO: Si no hay sesión todavía, no intentes cargar nada
+    // Si no hay sesión todavía, no intentes cargar nada
     if (!session || !session.user) return;
 
     // Si ya estamos buscando datos, o si ya no quedan más fotos en el servidor, no hacemos nada
@@ -145,7 +147,6 @@ export default function App() {
           offset_num: offset,
           limit_num: FOTOS_POR_PAGINA
         })
-        .select(`*, perfiles ( username, avatar_url )`);
 
       if (error) throw error;
 
@@ -240,77 +241,89 @@ export default function App() {
 
   // --- EL ESQUELETO (Para usuarios logueados) ---
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: vistaActual === 'camara' ? 'black' : COLORES.fondo }}>
-      
-      {vistaActual === 'camara' ? (
-        <CameraScreen 
-          volverAlRanking={() => setVistaActual('feed')} // Al hacer foto, volvemos al inicio
-          alTerminarSubida={() => {
-            setVistaActual('feed');
-            cargarRanking(); 
-            cargarFeed(); // Recargamos para que vea su foto recién subida
-          }}
-          userId={session.user.id} 
-        />
+    <SafeAreaProvider>
+      <SafeAreaView style={{ flex: 1, backgroundColor: vistaActual === 'camara' ? 'black' : COLORES.fondo }}>
 
-      ) : vistaActual === 'fotoDetalle' && fotoSeleccionada ? (
-        <View style={{ flex: 1 }}>
-          <SinglePostScreen 
-            foto={fotoSeleccionada}
-            listaRanking={listaRanking}
-            onVolver={() => setVistaActual(vistaAnteriorFoto)}
-            onPressUser={irAPerfil}
+        <StatusBar barStyle="light-content" backgroundColor={COLORES.fondo} />
+        
+        {vistaActual === 'camara' ? (
+          <CameraScreen 
+            volverAlRanking={() => setVistaActual('feed')} // Al hacer foto, volvemos al inicio
+            alTerminarSubida={() => {
+              setVistaActual('feed');
+              cargarRanking(); 
+              cargarFeed(); // Recargamos para que vea su foto recién subida
+            }}
+            userId={session.user.id} 
           />
-        </View>
 
-      ) : vistaActual === 'perfil' ? (
-        <View style={{ flex: 1 }}>
-          <ProfileScreen 
-            session={session} 
-            // Conectamos el clic de tu cuadrícula
-            onPressFoto={(foto) => abrirDetalleFoto(foto, 'perfil')} 
-          />
-          <Footer vistaActual={vistaActual} setVistaActual={setVistaActual} />
-        </View>
+        ) : vistaActual === 'fotoDetalle' && fotoSeleccionada ? (
+          <View style={{ flex: 1 }}>
+            <SinglePostScreen 
+              foto={fotoSeleccionada}
+              listaRanking={listaRanking}
+              onVolver={() => setVistaActual(vistaAnteriorFoto)}
+              onPressUser={irAPerfil}
+            />
+          </View>
 
-      ) : vistaActual === 'ranking' ? ( 
-        <View style={{ flex: 1 }}>
-          <RankingScreen 
-            listaRanking={listaRanking} 
-            cargandoRanking={cargandoRanking} 
-            // Opcional: Si quieres que desde el ranking también se pueda ir al perfil
-            // onPressUser={irAPerfil} 
-          />
-          <Footer vistaActual={vistaActual} setVistaActual={setVistaActual} />
-        </View>
+        ) : vistaActual === 'perfil' ? (
+          <View style={{ flex: 1 }}>
+            <ProfileScreen 
+              session={session} 
+              // Conectamos el clic de tu cuadrícula
+              onPressFoto={(foto) => abrirDetalleFoto(foto, 'perfil')} 
+            />
+            <Footer vistaActual={vistaActual} setVistaActual={setVistaActual} />
+          </View>
 
-      ) : vistaActual === 'perfilPublico' ? (
-        <View style={{ flex: 1 }}>
-          <PublicProfileScreen 
-            userId={usuarioVisitado || ''} 
-            onVolver={() => setVistaActual(vistaAnterior)}
-            // Conectamos el clic de la cuadrícula de tu amigo
-            onPressFoto={(foto) => abrirDetalleFoto(foto, 'perfilPublico')} 
-          />
-          <Footer vistaActual={vistaAnterior} setVistaActual={setVistaActual} />
-        </View>
+        ) : vistaActual === 'ranking' ? ( 
+          <View style={{ flex: 1 }}>
+            <RankingScreen 
+              listaRanking={listaRanking} 
+              cargandoRanking={cargandoRanking} 
+              // Opcional: Si quieres que desde el ranking también se pueda ir al perfil
+              // onPressUser={irAPerfil} 
+            />
+            <Footer vistaActual={vistaActual} setVistaActual={setVistaActual} />
+          </View>
 
-      ) : ( // RUTA POR DEFECTO (FEED)
-        <View style={{ flex: 1 }}>
-          <FeedScreen 
-            listaFeed={listaFeed} 
-            listaRanking={listaRanking} 
-            cargandoFeed={cargandoFeed} // Necesitamos este estado para la rueda
-            cargarMas={(reset) => cargarFeed(reset)} // Ahora acepta el parámetro de reset
-            cargandoMas={cargandoMas}
-            hayMasFotos={hayMasFotos}
-            onPressUser={irAPerfil}
-          />
-          <Footer vistaActual={vistaActual} setVistaActual={setVistaActual} />
-        </View>
-      )}
+        ) : vistaActual === 'perfilPublico' ? (
+          <View style={{ flex: 1 }}>
+            <PublicProfileScreen 
+              userId={usuarioVisitado || ''} 
+              onVolver={() => setVistaActual(vistaAnterior)}
+              // Conectamos el clic de la cuadrícula de tu amigo
+              onPressFoto={(foto) => abrirDetalleFoto(foto, 'perfilPublico')} 
+            />
+            <Footer vistaActual={vistaAnterior} setVistaActual={setVistaActual} />
+          </View>
 
-    </SafeAreaView>
+        ) : vistaActual === 'search' ? (
+          <View style={{ flex: 1 }}>
+            {/* Ojo: asegúrate de tener importado SearchScreen arriba */}
+            <SearchScreen onPressUser={(userId) => irAPerfil(userId)}/> 
+            <Footer vistaActual={vistaActual} setVistaActual={setVistaActual} />
+          </View>
+
+        ) : ( // RUTA POR DEFECTO (FEED)
+          <View style={{ flex: 1 }}>
+            <FeedScreen 
+              listaFeed={listaFeed} 
+              listaRanking={listaRanking} 
+              cargandoFeed={cargandoFeed} // Necesitamos este estado para la rueda
+              cargarMas={(reset) => cargarFeed(reset)} // Ahora acepta el parámetro de reset
+              cargandoMas={cargandoMas}
+              hayMasFotos={hayMasFotos}
+              onPressUser={irAPerfil}
+              currentUserId={session.user.id} // Pasamos el ID del usuario actual al feed
+            />
+            <Footer vistaActual={vistaActual} setVistaActual={setVistaActual} />
+          </View>
+        )}
+
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 

@@ -65,7 +65,7 @@ export default function PublicProfileScreen({ userId, onVolver, onPressFoto }: P
       const currentUserId = session?.user?.id || null;
       setMiUserId(currentUserId);
 
-      // 1. Cargamos datos básicos y fotos (lo que ya tenías)
+      // 1. Cargamos datos básicos y fotos del usuario
       const { data: perfilData } = await supabase.from('perfiles').select('username, avatar_url').eq('id', userId).single();
       const { data: rankingData } = await supabase.from('vista_ranking').select('total_zumos').eq('id', userId).maybeSingle();
       const { data: fotosData } = await supabase.from('publicaciones').select('*, perfiles (username, avatar_url)').eq('perfil_id', userId).order('created_at', { ascending: false });

@@ -1,57 +1,79 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons'; // Importamos la librería
 import { COLORES } from '../theme';
-import { Ionicons } from '@expo/vector-icons';
 
-// Este componente es el menú inferior que te permite navegar entre las vistas principales de la app
 interface FooterProps {
-  vistaActual: 'feed' | 'ranking' | 'camara' | 'perfil'| 'search' | 'perfilPublico' | 'fotoDetalle' | string;
+  vistaActual: string;
   setVistaActual: (vista: any) => void;
 }
 
 export default function Footer({ vistaActual, setVistaActual }: FooterProps) {
+  
+  // Función para decidir el color (Naranja Zumo si está activo, Gris si no)
+  const colorIcono = (nombreVista: string) => 
+    vistaActual === nombreVista ? COLORES.primario : COLORES.secundario;
+
   return (
     <View style={styles.footer}>
-        <TouchableOpacity style={styles.botonFooter} onPress={() => setVistaActual('feed')}>
-        <Text style={[styles.textoFooter, vistaActual === 'feed' && styles.textoFooterActivo]}>
-          🏠
-        </Text>
+      
+      {/* BOTÓN FEED (INICIO) */}
+      <TouchableOpacity onPress={() => setVistaActual('feed')}>
+        <Ionicons 
+          name={vistaActual === 'feed' ? 'home' : 'home-outline'} 
+          size={26} 
+          color={colorIcono('feed')} 
+        />
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.botonFooter} onPress={() => setVistaActual('ranking')}>
-        <Text style={[styles.textoFooter, vistaActual === 'ranking' && styles.textoFooterActivo]}>
-          🏆
-        </Text>
+      {/* BOTÓN BÚSQUEDA (EL NUEVO) */}
+      <TouchableOpacity onPress={() => setVistaActual('search')}>
+        <Ionicons 
+          name={vistaActual === 'search' ? 'search' : 'search-outline'} 
+          size={26} 
+          color={colorIcono('search')} 
+        />
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.botonFooter} onPress={() => setVistaActual('camara')}>
-        <Text style={[styles.textoFooter, vistaActual === 'camara' && styles.textoFooterActivo]}>
-          📸
-        </Text>
+      {/* BOTÓN CÁMARA */}
+      <TouchableOpacity onPress={() => setVistaActual('camara')}>
+        <Ionicons 
+          name={vistaActual === 'camara' ? 'camera' : 'camera-outline'} 
+          size={28} // Un pelín más grande por ser la acción principal
+          color={colorIcono('camara')} 
+        />
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.botonFooter} onPress={() => setVistaActual('search')}>
-        <Ionicons name="search-outline" size={28} color={COLORES.secundario} />
+      {/* BOTÓN RANKING */}
+      <TouchableOpacity onPress={() => setVistaActual('ranking')}>
+        <Ionicons 
+          name={vistaActual === 'ranking' ? 'trophy' : 'trophy-outline'} 
+          size={26} 
+          color={colorIcono('ranking')} 
+        />
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.botonFooter} onPress={() => setVistaActual('perfil')}>
-        <Text style={[styles.textoFooter, vistaActual === 'perfil' && styles.textoFooterActivo]}>
-          👤
-        </Text>
+      {/* BOTÓN PERFIL */}
+      <TouchableOpacity onPress={() => setVistaActual('perfil')}>
+        <Ionicons 
+          name={vistaActual === 'perfil' ? 'person' : 'person-outline'} 
+          size={26} 
+          color={colorIcono('perfil')} 
+        />
       </TouchableOpacity>
+
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  footer: { 
-    height: 80, 
-    flexDirection: 'row', 
-    backgroundColor: COLORES.fondo,
-    borderTopWidth: 1, 
-    borderTopColor: COLORES.tarjeta, 
-    paddingBottom: 20 
+  footer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    backgroundColor: COLORES.fondo, // Fondo oscuro inmersivo
+    height: 70,
+    borderTopWidth: 1,
+    borderTopColor: '#222', // Borde sutil superior
+    paddingBottom: 10, // Espacio extra para el gesto de "home" de los móviles modernos
   },
-  botonFooter: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  textoFooter: { color: COLORES.secundario, fontSize: 16, fontWeight: '600' },
-  textoFooterActivo: { color: COLORES.textoBlanco, fontWeight: 'bold' }
 });

@@ -1,34 +1,49 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet, SafeAreaView, Platform } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { COLORES } from '../theme';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet, Platform, ActivityIndicator, Image } from 'react-native';
+import { Ionicons } from '@expo/vector-icons'; 
+import { COLORES, FUENTES } from '../theme';
+import { supabase } from '../supabase';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-export default function SearchScreen({ navigation }: any) {
+export default function SearchScreen({ onPressUser }: { onPressUser: (id: string) => void }) {
   const [busqueda, setBusqueda] = useState('');
+  const [resultados, setResultados] = useState<any[]>([]);
+  const [cargando, setCargando] = useState(false);
 
-  // Datos falsos para probar el diseño (hasta que lo conectes a Supabase)
-  const usuariosDummy = [
-    { id: '1', username: 'jhosel501', nombre: 'Jhosel' },
-    { id: '2', username: 'zumo_oficial', nombre: 'Zumo App' },
-    { id: '3', username: 'marcos_unizar', nombre: 'Marcos' },
-    { id: '4', username: 'maria_z', nombre: 'María' },
-  ];
+  useEffect(() => {
+    const buscarUsuarios = async () => {
+      if (busqueda.trim().length === 0) {
+        setResultados([]);
+        return;
+      }
 
-  // Lógica de filtrado en tiempo real
-  const resultados = usuariosDummy.filter(user => 
-    user.username.toLowerCase().includes(busqueda.toLowerCase())
-  );
+      setCargando(true);
+      const queryLimpia = busqueda.startsWith('@') ? busqueda.slice(1) : busqueda;
+
+      try {
+        const { data, error } = await supabase
+          .from('perfiles')
+          .select('id, username, avatar_url') // Traemos el avatar_url
+          .ilike('username', `%${queryLimpia}%`)
+          .limit(15);
+
+        if (error) throw error;
+        setResultados(data || []);
+      } catch (error) {
+        console.error("Error en la búsqueda:", error);
+      } finally {
+        setCargando(false);
+      }
+    };
+
+    const timeoutId = setTimeout(buscarUsuarios, 300);
+    return () => clearTimeout(timeoutId);
+  }, [busqueda]);
 
   return (
     <SafeAreaView style={styles.contenedorSafeArea}>
       <View style={styles.contenedor}>
-        
-        {/* HEADER: Buscador Inmersivo */}
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.botonAtras}>
-            <Ionicons name="arrow-back" size={26} color={COLORES.textoBlanco} />
-          </TouchableOpacity>
-          
           <View style={styles.cajaBuscador}>
             <Ionicons name="search" size={18} color={COLORES.secundario} style={styles.iconoLupa} />
             <TextInput
@@ -38,12 +53,12 @@ export default function SearchScreen({ navigation }: any) {
               value={busqueda}
               onChangeText={setBusqueda}
               autoCapitalize="none"
-              autoFocus={true} // El teclado se abre nada más entrar a la pantalla
+              autoFocus={true}
             />
+            {cargando && <ActivityIndicator size="small" color={COLORES.primario} />}
           </View>
         </View>
 
-        {/* LISTA DE PERFILES */}
         <FlatList
           data={resultados}
           keyExtractor={(item) => item.id}
@@ -51,21 +66,32 @@ export default function SearchScreen({ navigation }: any) {
           renderItem={({ item }) => (
             <TouchableOpacity 
               style={styles.tarjetaUsuario}
-              onPress={() => navigation.navigate('PublicProfileScreen', { userId: item.id })}
+              onPress={() => onPressUser(item.id)} // Ahora funcionará perfectamente
             >
-              {/* Avatar circular estilo Instagram */}
               <View style={styles.avatarCircular}>
-                <Text style={styles.letraAvatar}>{item.username.charAt(0).toUpperCase()}</Text>
+                {/* SI HAY URL DE AVATAR, MOSTRAMOS LA IMAGEN */}
+                {item.avatar_url ? (
+                  <Image 
+                    source={{ uri: item.avatar_url }} 
+                    style={styles.imagenAvatar} 
+                  />
+                ) : (
+                  /* SI NO HAY, MOSTRAMOS LA LETRA COMO ANTES */
+                  <Text style={styles.letraAvatar}>
+                    {item.username ? item.username.charAt(0).toUpperCase() : '?'}
+                  </Text>
+                )}
               </View>
               
               <View style={styles.infoUsuario}>
                 <Text style={styles.username}>@{item.username}</Text>
-                <Text style={styles.nombreReal}>{item.nombre}</Text>
               </View>
             </TouchableOpacity>
           )}
           ListEmptyComponent={() => (
-            <Text style={styles.textoVacio}>No se han encontrado perfiles.</Text>
+            !cargando && busqueda.length > 0 ? (
+              <Text style={styles.textoVacio}>No hemos encontrado a nadie con ese nombre</Text>
+            ) : null
           )}
         />
       </View>
@@ -74,80 +100,33 @@ export default function SearchScreen({ navigation }: any) {
 }
 
 const styles = StyleSheet.create({
-  contenedorSafeArea: {
-    flex: 1,
-    backgroundColor: COLORES.fondo,
-    paddingTop: Platform.OS === 'android' ? 40 : 0, // Evita que se solape con el reloj en Android
-  },
-  contenedor: {
-    flex: 1,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 15,
-    paddingBottom: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORES.tarjeta,
-  },
-  botonAtras: {
-    marginRight: 15,
-  },
-  cajaBuscador: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: COLORES.tarjeta, // Mismo gris oscuro de tus inputs
-    borderRadius: 12,
-    paddingHorizontal: 15,
-    height: 45,
-  },
-  iconoLupa: {
-    marginRight: 10,
-  },
-  input: {
-    flex: 1,
-    color: COLORES.textoBlanco,
-    fontSize: 16,
-  },
-  tarjetaUsuario: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  avatarCircular: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: COLORES.tarjeta,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 15,
-    borderWidth: 1,
+  contenedorSafeArea: { flex: 1, backgroundColor: COLORES.fondo, paddingTop: Platform.OS === 'android' ? 40 : 0 },
+  contenedor: { flex: 1 },
+  header: { paddingHorizontal: 15, paddingBottom: 15, borderBottomWidth: 1, borderBottomColor: COLORES.tarjeta },
+  cajaBuscador: { flexDirection: 'row', alignItems: 'center', backgroundColor: COLORES.tarjeta, borderRadius: 12, paddingHorizontal: 15, height: 45 },
+  iconoLupa: { marginRight: 10 },
+  input: { flex: 1, color: COLORES.textoBlanco, fontSize: 16 },
+  tarjetaUsuario: { flexDirection: 'row', alignItems: 'center', marginBottom: 20 },
+  avatarCircular: { 
+    width: 50, 
+    height: 50, 
+    borderRadius: 25, 
+    backgroundColor: '#222', 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    marginRight: 15, 
+    borderWidth: 1, 
     borderColor: COLORES.borde,
+    overflow: 'hidden' // Importante para que la imagen no se salga del círculo
   },
-  letraAvatar: {
-    color: COLORES.primario, // Letra en color naranja Zumo
-    fontSize: 20,
-    fontWeight: '900',
+  imagenAvatar: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover'
   },
-  infoUsuario: {
-    justifyContent: 'center',
-  },
-  username: {
-    color: COLORES.textoBlanco,
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 3,
-  },
-  nombreReal: {
-    color: COLORES.secundario,
-    fontSize: 14,
-  },
-  textoVacio: {
-    color: COLORES.secundario,
-    textAlign: 'center',
-    marginTop: 40,
-    fontSize: 16,
-  }
+  letraAvatar: { color: COLORES.primario, fontSize: 20, fontWeight: '900' },
+  infoUsuario: { justifyContent: 'center' },
+  username: { color: COLORES.textoBlanco, fontSize: 16, fontWeight: 'bold', marginBottom: 3 },
+  nombreReal: { color: COLORES.secundario, fontSize: 14 },
+  textoVacio: { color: COLORES.secundario, textAlign: 'center', marginTop: 40, fontSize: 16 }
 });

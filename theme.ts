@@ -8,7 +8,7 @@ export const COLORES = {
   // Colores de acento y marca (Extraídos de tu --zumo-gradient)
   primario: '#FF5B37',   // El color principal de tu degradado y botones
   secundario: '#666670', // Extraído de tu --texto-dim para textos secundarios
-  acento: '#E93E71',     // El color central de tu degradado (rosa/fucsia)
+  acento: '#E93E71',      // El color central de tu degradado (rosa/fucsia)
   
   // Textos y nuevos colores para los inputs
   textoBlanco: '#FFFFFF', // Extraído de tu --texto
