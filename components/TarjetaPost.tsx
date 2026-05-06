@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import AvatarPlaceholder from './AvatarPlaceholder';
 // Necesitarás un paquete de iconos. En Expo se suele usar este:
 import { Ionicons } from '@expo/vector-icons'; 
 import { COLORES } from '../theme';
@@ -66,9 +67,7 @@ export default function TarjetaPost({ item, listaRanking, onPressUser, currentUs
           {avatar ? (
             <Image source={{ uri: avatar }} style={styles.avatarPequeno} />
           ) : (
-            <View style={styles.avatarPlaceholder}>
-              <Text style={{ fontSize: 14 }}>👤</Text>
-            </View>
+            <AvatarPlaceholder size={34} style={{ marginRight: 10 }} />
           )}
           <Text style={styles.nombreUsuario}>{username}</Text>
         </TouchableOpacity>
@@ -108,7 +107,6 @@ const styles = StyleSheet.create({
   cabeceraPost: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 15 },
   usuarioPost: { flexDirection: 'row', alignItems: 'center' },
   avatarPequeno: { width: 34, height: 34, borderRadius: 17, marginRight: 10, borderWidth: 1, borderColor: COLORES.primario },
-  avatarPlaceholder: { width: 34, height: 34, borderRadius: 17, marginRight: 10, backgroundColor: '#22272e', justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: COLORES.secundario },
   nombreUsuario: { color: COLORES.textoBlanco, fontSize: 16, fontWeight: 'bold' },
   puestoTexto: { color: COLORES.acento, fontSize: 18, fontWeight: '900' },
   fotoPost: { width: '100%', aspectRatio: 4/5, backgroundColor: 'black' },

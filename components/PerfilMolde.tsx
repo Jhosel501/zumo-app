@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView, Dimensions, ActivityIndicator, RefreshControl } from 'react-native';
 import { COLORES } from '../theme';
+import AvatarPlaceholder from './AvatarPlaceholder';
 
 const anchoPantalla = Dimensions.get('window').width;
 const tamanoFotoGrid = anchoPantalla / 3;
@@ -82,9 +83,7 @@ export default function PerfilMolde({
             {avatarUrl ? (
               <Image source={{ uri: avatarUrl }} style={styles.avatarPerfil} />
             ) : (
-              <View style={styles.avatarPerfilVacio}>
-                <Text style={{ fontSize: 30 }}>👤</Text>
-              </View>
+              <AvatarPlaceholder size={86} />
             )}
           </View>
 
@@ -216,7 +215,6 @@ const styles = StyleSheet.create({
   zonaStats: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, marginBottom: 20 },
   contenedorAvatarStats: { marginRight: 20 },
   avatarPerfil: { width: 86, height: 86, borderRadius: 43, borderWidth: 2, borderColor: COLORES.primario },
-  avatarPerfilVacio: { width: 86, height: 86, borderRadius: 43, backgroundColor: COLORES.tarjeta, justifyContent: 'center', alignItems: 'center', borderWidth: 2, borderColor: COLORES.secundario },
   bloqueContadores: { flex: 1, flexDirection: 'row', justifyContent: 'space-around' },
   contadorInfo: { alignItems: 'center' },
   numeroStat: { color: COLORES.textoBlanco, fontSize: 22, fontWeight: 'bold' },

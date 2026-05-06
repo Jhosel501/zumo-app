@@ -6,6 +6,7 @@ import { COLORES } from '../theme';
 
 // Importamos el molde
 import PerfilMolde from '../components/PerfilMolde';
+import AvatarPlaceholder from '../components/AvatarPlaceholder';
 
 interface ProfileProps {
   session: any;
@@ -245,7 +246,7 @@ export default function ProfileScreen({ session, onPressFoto }: ProfileProps) {
         <ScrollView style={styles.contenidoAjustes}>
           <View style={styles.zonaAvatar}>
             <TouchableOpacity onPress={seleccionarFoto} disabled={guardando}>
-              {avatarUrl ? <Image source={{ uri: avatarUrl }} style={styles.avatarGrande} /> : <View style={styles.avatarGrandeVacio}><Text style={{fontSize: 40}}>👤</Text></View>}
+              {avatarUrl ? <Image source={{ uri: avatarUrl }} style={styles.avatarGrande} /> : <AvatarPlaceholder size={100} />}
               <View style={styles.botonEditarFoto}><Text style={{ color: 'white', fontSize: 12 }}>✏️</Text></View>
             </TouchableOpacity>
           </View>
@@ -329,7 +330,6 @@ const styles = StyleSheet.create({
   contenidoAjustes: { flex: 1, padding: 20 },
   zonaAvatar: { alignItems: 'center', marginBottom: 30, marginTop: 10 },
   avatarGrande: { width: 100, height: 100, borderRadius: 50, borderWidth: 3, borderColor: COLORES.primario },
-  avatarGrandeVacio: { width: 100, height: 100, borderRadius: 50, backgroundColor: COLORES.tarjeta, justifyContent: 'center', alignItems: 'center', borderWidth: 2, borderColor: COLORES.secundario },
   botonEditarFoto: { position: 'absolute', bottom: 0, right: 0, backgroundColor: COLORES.primario, width: 30, height: 30, borderRadius: 15, justifyContent: 'center', alignItems: 'center', borderWidth: 2, borderColor: COLORES.fondo },
   label: { color: COLORES.secundario, fontSize: 14, marginBottom: 5, marginLeft: 5 },
   input: { backgroundColor: COLORES.tarjeta, color: COLORES.textoBlanco, padding: 15, borderRadius: 10, marginBottom: 20, fontSize: 16 },

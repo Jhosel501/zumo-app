@@ -1,5 +1,6 @@
 import { View, Text, FlatList, Image, ActivityIndicator, StyleSheet } from 'react-native';
 import { COLORES, FUENTES } from '../theme';
+import AvatarPlaceholder from '../components/AvatarPlaceholder';
 
 interface RankingProps {
   listaRanking: any[];
@@ -40,9 +41,7 @@ export default function RankingScreen({ listaRanking, cargandoRanking }: Ranking
                     {avatar ? (
                       <Image source={{ uri: avatar }} style={styles.avatar} />
                     ) : (
-                      <View style={styles.avatarPlaceholder}>
-                        <Text style={{ fontSize: 16 }}>👤</Text>
-                      </View>
+                      <AvatarPlaceholder size={40} style={{ marginRight: 12 }} />
                     )}
                     
                     <Text style={styles.nombreTarjeta}>{username}</Text>
@@ -76,7 +75,6 @@ const styles = StyleSheet.create({
   posicion: { fontSize: 20, fontWeight: '900', width: 45 },
   
   avatar: { width: 40, height: 40, borderRadius: 20, marginRight: 12, borderWidth: 2, borderColor: COLORES.fondo },
-  avatarPlaceholder: { width: 40, height: 40, borderRadius: 20, marginRight: 12, backgroundColor: '#22272e', justifyContent: 'center', alignItems: 'center', borderWidth: 2, borderColor: COLORES.secundario },
   
   nombreTarjeta: { color: COLORES.textoBlanco, fontSize: 16, fontWeight: 'bold' },
   

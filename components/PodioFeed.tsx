@@ -1,5 +1,6 @@
 import { View, Text, Image, StyleSheet } from 'react-native';
 import { COLORES } from '../theme';
+import AvatarPlaceholder from './AvatarPlaceholder';
 
 interface PodioProps {
   listaRanking: any[];
@@ -31,9 +32,7 @@ export default function PodioFeed({ listaRanking }: PodioProps) {
           {avatar ? (
             <Image source={{ uri: avatar }} style={{ width: '100%', height: '100%' }} />
           ) : (
-            <View style={[styles.avatarPlaceholder, { borderRadius: size / 2 }]}>
-              <Text style={{ fontSize: size / 2.5 }}>👤</Text>
-            </View>
+            <AvatarPlaceholder size={size} />
           )}
           {/* El circulito con el número de posición */}
           <View style={[styles.medalla, { backgroundColor: colorBorde }]}>
@@ -85,13 +84,6 @@ const styles = StyleSheet.create({
   contenedorAvatar: {
     borderWidth: 3,
     marginBottom: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  avatarPlaceholder: {
-    width: '100%',
-    height: '100%',
-    backgroundColor: COLORES.tarjeta,
     justifyContent: 'center',
     alignItems: 'center',
   },

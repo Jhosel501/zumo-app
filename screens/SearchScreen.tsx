@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORES, FUENTES } from '../theme';
 import { supabase } from '../supabase';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import AvatarPlaceholder from '../components/AvatarPlaceholder';
 
 type Perfil = { id: string; username: string; avatar_url: string | null };
 
@@ -71,18 +72,13 @@ export default function SearchScreen({ onPressUser }: { onPressUser: (id: string
               style={styles.tarjetaUsuario}
               onPress={() => onPressUser(item.id)}
             >
-              <View style={styles.avatarCircular}>
-                {item.avatar_url ? (
-                  <Image
-                    source={{ uri: item.avatar_url }}
-                    style={styles.imagenAvatar}
-                  />
-                ) : (
-                  <Text style={styles.letraAvatar}>
-                    {item.username ? item.username.charAt(0).toUpperCase() : '?'}
-                  </Text>
-                )}
-              </View>
+              {item.avatar_url ? (
+                <View style={styles.avatarCircular}>
+                  <Image source={{ uri: item.avatar_url }} style={styles.imagenAvatar} />
+                </View>
+              ) : (
+                <AvatarPlaceholder size={50} style={{ marginRight: 15 }} />
+              )}
 
               <View style={styles.infoUsuario}>
                 <Text style={styles.username}>@{item.username}</Text>
