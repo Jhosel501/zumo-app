@@ -14,7 +14,8 @@ interface CommentsScreenProps {
 }
 
 function formatTimeAgo(dateString: string): string {
-  const diffMs = new Date().getTime() - new Date(dateString).getTime();
+  const date = new Date(dateString.endsWith('Z') ? dateString : dateString + 'Z');
+  const diffMs = new Date().getTime() - date.getTime();
   const mins = Math.floor(diffMs / 60000);
   const hours = Math.floor(diffMs / 3600000);
   const days = Math.floor(diffMs / 86400000);
