@@ -36,7 +36,7 @@ export default function TarjetaPost({ item, listaRanking, onPressUser }: Tarjeta
           {avatar ? (
             <Image source={{ uri: avatar }} style={styles.avatarPequeno} />
           ) : (
-            <AvatarPlaceholder size={34} style={{ marginRight: 10 }} />
+            <AvatarPlaceholder size={28} style={{ marginRight: 10 }} />
           )}
           <Text style={styles.nombreUsuario}>{username}</Text>
         </TouchableOpacity>
@@ -70,25 +70,25 @@ export default function TarjetaPost({ item, listaRanking, onPressUser }: Tarjeta
 const styles = StyleSheet.create({
   tarjetaPost: {
     backgroundColor: '#000000',
-    marginBottom: 12,
+    marginBottom: 2,
   },
   cabeceraPost: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 15,
+    padding: 10,
   },
   usuarioPost: { flexDirection: 'row', alignItems: 'center' },
   avatarPequeno: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
     marginRight: 10,
     borderWidth: 1,
     borderColor: COLORES.primario,
   },
-  nombreUsuario: { color: COLORES.textoBlanco, fontSize: 16, fontWeight: 'bold' },
-  puestoTexto: { color: COLORES.acento, fontSize: 18, fontWeight: '900' },
+  nombreUsuario: { color: COLORES.textoBlanco, fontSize: 14, fontWeight: 'bold' },
+  puestoTexto: { color: COLORES.acento, fontSize: 15, fontWeight: '900' },
   fotoPost: { width: '100%', aspectRatio: 4 / 5, backgroundColor: 'black' },
   footer: {
     flexDirection: 'row',
