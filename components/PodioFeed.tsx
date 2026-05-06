@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-end', // Alineamos los avatares por la base para que el #1 sobresalga por arriba
     justifyContent: 'center',
-    marginBottom: 8,
+    marginBottom: 12,
   },
   escalon: {
     alignItems: 'center',
@@ -127,6 +127,6 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 1,
     backgroundColor: COLORES.tarjeta,
-    marginTop: 0,
+    marginTop: 5,
   }
 });
