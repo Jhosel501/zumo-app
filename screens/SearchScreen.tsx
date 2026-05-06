@@ -99,7 +99,7 @@ export default function SearchScreen({ onPressUser }: { onPressUser: (id: string
 const styles = StyleSheet.create({
   contenedorSafeArea: { flex: 1, backgroundColor: '#000000', paddingTop: Platform.OS === 'android' ? 40 : 0 },
   contenedor: { flex: 1 },
-  header: { paddingHorizontal: 15, paddingBottom: 15, borderBottomWidth: 1, borderBottomColor: COLORES.tarjeta },
+  header: { paddingHorizontal: 15, paddingTop: 8, paddingBottom: 15, borderBottomWidth: 1, borderBottomColor: COLORES.tarjeta },
   cajaBuscador: { flexDirection: 'row', alignItems: 'center', backgroundColor: COLORES.tarjeta, borderRadius: 12, paddingHorizontal: 15, height: 45 },
   iconoLupa: { marginRight: 10 },
   input: { flex: 1, color: COLORES.textoBlanco, fontSize: 16 },
