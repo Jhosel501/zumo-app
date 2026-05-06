@@ -70,10 +70,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    backgroundColor: COLORES.fondo, // Fondo oscuro inmersivo
+    backgroundColor: '#000000',
     height: 70,
     borderTopWidth: 1,
-    borderTopColor: '#222', // Borde sutil superior
-    paddingBottom: 10, // Espacio extra para el gesto de "home" de los móviles modernos
+    borderTopColor: '#1a1a1a',
+    paddingBottom: 8,
   },
 });
