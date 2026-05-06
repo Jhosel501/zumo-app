@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator, Image, KeyboardAvoidingView, Platform, ScrollView, RefreshControl, Share, Modal } from 'react-native';
+import Svg, { Path } from 'react-native-svg';
 import * as ImagePicker from 'expo-image-picker';
 import { supabase } from '../supabase';
 import { COLORES } from '../theme';
@@ -239,7 +240,11 @@ export default function ProfileScreen({ session, onPressFoto }: ProfileProps) {
     return (
       <KeyboardAvoidingView style={styles.contenedor} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <View style={styles.headerAjustes}>
-          <TouchableOpacity onPress={() => setVistaInterna('perfil')}><Text style={styles.textoVolver}>{'< Volver'}</Text></TouchableOpacity>
+          <TouchableOpacity onPress={() => setVistaInterna('perfil')}>
+            <Svg width={22} height={22} viewBox="0 0 24 24" fill="none">
+              <Path d="M15 18l-6-6 6-6" stroke="#FF5B37" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </Svg>
+          </TouchableOpacity>
           <Text style={styles.tituloHeaderAjustes}>Ajustes</Text>
           <View style={{ width: 60 }} /> 
         </View>

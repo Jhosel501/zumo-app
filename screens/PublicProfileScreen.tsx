@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, PanResponder } from 'react-native';
+import Svg, { Path } from 'react-native-svg';
 import { supabase } from '../supabase';
 import { COLORES } from '../theme';
 import PerfilMolde from '../components/PerfilMolde';
@@ -150,7 +151,9 @@ export default function PublicProfileScreen({ userId, onVolver, onPressFoto }: P
       {/* BOTÓN DE VOLVER */}
       <View style={styles.headerNavegacion}>
         <TouchableOpacity onPress={onVolver} style={styles.botonVolver}>
-          <Text style={styles.textoVolver}>{'< Volver'}</Text>
+          <Svg width={22} height={22} viewBox="0 0 24 24" fill="none">
+            <Path d="M15 18l-6-6 6-6" stroke="#FF5B37" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </Svg>
         </TouchableOpacity>
       </View>
 
