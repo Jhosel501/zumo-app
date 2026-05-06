@@ -25,6 +25,7 @@ interface PerfilMoldeProps {
   onRefresh?: () => void;
   invitacion?: { codigo: string, usos: number } | null;
   onPressInvitar?: () => void;
+  onVolver?: () => void;
 }
 
 export default function PerfilMolde({ 
@@ -43,8 +44,9 @@ export default function PerfilMolde({
   cargandoSeguimiento,
   refreshing = false, // Lo inicializamos en false por defecto
   onRefresh,
-  invitacion,      
-  onPressInvitar, 
+  invitacion,
+  onPressInvitar,
+  onVolver,
 }: PerfilMoldeProps) {
   
   const [tabActiva, setTabActiva] = useState<'fotos' | 'trofeos' | 'etiquetadas'>('fotos');
@@ -53,17 +55,27 @@ export default function PerfilMolde({
     <View style={styles.contenedor}>
       {/* CABECERA */}
       <View style={styles.headerPerfil}>
+        {onVolver ? (
+          <TouchableOpacity onPress={onVolver} style={styles.botonVolver}>
+            <Svg width={22} height={22} viewBox="0 0 24 24" fill="none">
+              <Path d="M15 18l-6-6 6-6" stroke="#FF5B37" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </Svg>
+          </TouchableOpacity>
+        ) : (
+          <View style={{ width: 32 }} />
+        )}
+
         <Text style={styles.usernameHeader}>{username || 'usuario'}</Text>
-        
+
         {esMiPerfil ? (
           <TouchableOpacity onPress={onPressAjustes} style={styles.botonAjustes}>
             <Svg width={22} height={22} viewBox="0 0 24 24" fill="none">
-                <Path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="#aaa" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-                <Path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="#aaa" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-              </Svg>
+              <Path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="#aaa" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+              <Path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="#aaa" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+            </Svg>
           </TouchableOpacity>
         ) : (
-          <View style={{ width: 34 }} /> 
+          <View style={{ width: 32 }} />
         )}
       </View>
 
@@ -213,8 +225,9 @@ export default function PerfilMolde({
 
 const styles = StyleSheet.create({
   contenedor: { flex: 1, backgroundColor: '#000000' },
-  headerPerfil: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingTop: 10, paddingBottom: 15 },
-  usernameHeader: { fontSize: 22, fontWeight: 'bold', color: COLORES.textoBlanco },
+  headerPerfil: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 15, paddingTop: 10, paddingBottom: 15 },
+  usernameHeader: { fontSize: 18, fontWeight: 'bold', color: COLORES.textoBlanco, flex: 1, textAlign: 'center' },
+  botonVolver: { padding: 5 },
   botonAjustes: { padding: 5 },
   zonaStats: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, marginBottom: 20 },
   contenedorAvatarStats: { marginRight: 20 },
