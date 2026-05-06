@@ -52,9 +52,9 @@ export default function PodioFeed({ listaRanking }: PodioProps) {
       {/* <Text style={styles.tituloPodio}>👑 Top</Text> */}
       <View style={styles.basePodio}>
         {/* El orden visual del podio: Izquierda(2), Centro(1), Derecha(3) */}
-        {renderEscalon(plata, 2, '#c0c0c0', 65)}
-        {renderEscalon(oro, 1, '#ffd700', 85)}
-        {renderEscalon(bronce, 3, '#cd7f32', 65)}
+        {renderEscalon(plata, 2, '#c0c0c0', 50)}
+        {renderEscalon(oro, 1, '#ffd700', 65)}
+        {renderEscalon(bronce, 3, '#cd7f32', 50)}
       </View>
       <View style={styles.lineaSeparadora} />
     </View>
@@ -114,13 +114,13 @@ const styles = StyleSheet.create({
   },
   nick: {
     color: COLORES.textoBlanco,
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: 'bold',
     textAlign: 'center',
   },
   zumos: {
     color: COLORES.primario,
-    fontSize: 11,
+    fontSize: 9,
     fontWeight: 'bold',
   },
   lineaSeparadora: {
