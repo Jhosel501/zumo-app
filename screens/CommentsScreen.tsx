@@ -3,6 +3,7 @@ import {
   View, Text, FlatList, TextInput, TouchableOpacity,
   StyleSheet, ActivityIndicator, Image, KeyboardAvoidingView, Platform,
 } from 'react-native';
+import Svg, { Path } from 'react-native-svg';
 import { supabase } from '../supabase';
 import { COLORES } from '../theme';
 import AvatarPlaceholder from '../components/AvatarPlaceholder';
@@ -77,7 +78,9 @@ export default function CommentsScreen({ publicacionId, currentUserId, onVolver 
       {/* HEADER */}
       <View style={styles.header}>
         <TouchableOpacity onPress={onVolver} style={styles.botonVolver}>
-          <Text style={styles.textoVolver}>{'< Volver'}</Text>
+          <Svg width={22} height={22} viewBox="0 0 24 24" fill="none">
+            <Path d="M15 18l-6-6 6-6" stroke="#FF5B37" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </Svg>
         </TouchableOpacity>
         <Text style={styles.titulo}>Comentarios</Text>
         <View style={{ width: 70 }} />
