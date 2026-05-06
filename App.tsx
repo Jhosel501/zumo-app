@@ -32,8 +32,10 @@ export default function App() {
   const [fotoSeleccionada, setFotoSeleccionada] = useState<any>(null);
   const [vistaAnteriorFoto, setVistaAnteriorFoto] = useState<'perfil' | 'perfilPublico'>('perfil');
   const [postComentarios, setPostComentarios] = useState<string | null>(null);
+  const [vistaAnteriorComentarios, setVistaAnteriorComentarios] = useState<'feed' | 'fotoDetalle'>('feed');
 
   const irAComentarios = (publicacionId: string) => {
+    setVistaAnteriorComentarios(vistaActual === 'fotoDetalle' ? 'fotoDetalle' : 'feed');
     setPostComentarios(publicacionId);
     setVistaActual('comentarios');
   };
@@ -347,7 +349,10 @@ export default function App() {
             <CommentsScreen
               publicacionId={postComentarios}
               currentUserId={session.user.id}
-              onVolver={() => { setVistaActual('feed'); cargarFeed(true); }}
+              onVolver={() => {
+                setVistaActual(vistaAnteriorComentarios);
+                if (vistaAnteriorComentarios === 'feed') cargarFeed(true);
+              }}
             />
           </View>
 
