@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderTopWidth: 1,
     borderTopColor: COLORES.tarjeta,
-    backgroundColor: COLORES.fondo,
+    backgroundColor: '#000000',
   },
   input: {
     flex: 1,

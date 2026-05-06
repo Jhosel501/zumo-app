@@ -63,8 +63,8 @@ export default function RankingScreen({ listaRanking, cargandoRanking }: Ranking
 }
 
 const styles = StyleSheet.create({
-  contenedor: { flex: 1 },
-  header: { height: 60, justifyContent: 'flex-end', alignItems: 'center', paddingBottom: 10, borderBottomWidth: 1, borderBottomColor: COLORES.tarjeta },
+  contenedor: { flex: 1, backgroundColor: '#000000' },
+  header: { height: 60, justifyContent: 'flex-end', alignItems: 'center', paddingBottom: 10, borderBottomWidth: 1, borderBottomColor: COLORES.tarjeta, backgroundColor: '#000000' },
   tituloHeader: { fontSize: 22, fontWeight: 'bold', color: COLORES.textoBlanco },
   feed: { flex: 1 },
   

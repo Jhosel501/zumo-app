@@ -242,7 +242,7 @@ export default function App() {
   // Pantalla de carga mientras comprobamos si está logueado
   if (cargandoSession) {
     return (
-      <View style={[styles.contenedorCentro, { backgroundColor: COLORES.fondo }]}>
+      <View style={[styles.contenedorCentro, { backgroundColor: '#000000' }]}>
         <ActivityIndicator size="large" color={COLORES.primario} />
       </View>
     );
@@ -256,7 +256,7 @@ export default function App() {
   // Si las fuentes aún no han cargado en la memoria, mostramos pantalla de carga
   if (!fuentesCargadas) {
     return (
-      <View style={[styles.contenedorCentro, { backgroundColor: COLORES.fondo }]}>
+      <View style={[styles.contenedorCentro, { backgroundColor: '#000000' }]}>
         <ActivityIndicator size="large" color={COLORES.primario} />
       </View>
     );
@@ -278,9 +278,9 @@ export default function App() {
   // --- EL ESQUELETO (Para usuarios logueados) ---
   return (
     <SafeAreaProvider>
-      <SafeAreaView style={{ flex: 1, backgroundColor: vistaActual === 'camara' ? 'black' : COLORES.fondo }}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: '#000000' }}>
 
-        <StatusBar barStyle="light-content" backgroundColor={COLORES.fondo} />
+        <StatusBar barStyle="light-content" backgroundColor={'#000000'} />
         
         {vistaActual === 'camara' ? (
           <CameraScreen 
@@ -379,7 +379,7 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  contenedorCentro: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: COLORES.fondo },
+  contenedorCentro: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#000000' },
   textoPermiso: { textAlign: 'center', marginBottom: 20, color: COLORES.textoBlanco, fontSize: 16 },
   botonPermiso: { backgroundColor: COLORES.primario, padding: 15, borderRadius: 10 }
 });

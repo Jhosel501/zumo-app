@@ -347,7 +347,7 @@ const styles = StyleSheet.create({
   modalCard: { backgroundColor: COLORES.tarjeta, borderRadius: 16, padding: 25, width: '100%' },
   modalTitulo: { color: COLORES.textoBlanco, fontSize: 20, fontWeight: 'bold', marginBottom: 10, textAlign: 'center' },
   modalSubtitulo: { color: COLORES.secundario, fontSize: 14, marginBottom: 25, textAlign: 'center' },
-  inputOTP: { backgroundColor: COLORES.fondo, color: COLORES.textoBlanco, padding: 15, borderRadius: 10, marginBottom: 20, fontSize: 28, textAlign: 'center', letterSpacing: 10 },
+  inputOTP: { backgroundColor: '#000000', color: COLORES.textoBlanco, padding: 15, borderRadius: 10, marginBottom: 20, fontSize: 28, textAlign: 'center', letterSpacing: 10 },
   botonVerificar: { backgroundColor: COLORES.primario, padding: 15, borderRadius: 10, alignItems: 'center', marginBottom: 15 },
   textoCancelarModal: { color: COLORES.secundario, textAlign: 'center', fontSize: 15 },
 });
