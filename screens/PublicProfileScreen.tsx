@@ -180,7 +180,7 @@ export default function PublicProfileScreen({ userId, onVolver, onPressFoto }: P
 const styles = StyleSheet.create({
   contenedor: { flex: 1, backgroundColor: COLORES.fondo },
   contenedorCentro: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: COLORES.fondo },
-  headerNavegacion: { paddingHorizontal: 20, paddingTop: 18, paddingBottom: 5, backgroundColor: COLORES.fondo },
+  headerNavegacion: { paddingHorizontal: 20, paddingTop: 18, paddingBottom: 5, backgroundColor: '#000000' },
   botonVolver: { paddingVertical: 10 },
   textoVolver: { color: COLORES.acento, fontSize: 16, fontWeight: 'bold' },
 });

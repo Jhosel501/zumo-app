@@ -329,10 +329,10 @@ export default function ProfileScreen({ session, onPressFoto }: ProfileProps) {
 const styles = StyleSheet.create({
   contenedor: { flex: 1, backgroundColor: COLORES.fondo },
   contenedorCentro: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: COLORES.fondo },
-  headerAjustes: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingTop: 12, paddingBottom: 15, borderBottomWidth: 1, borderBottomColor: COLORES.tarjeta },
+  headerAjustes: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingTop: 12, paddingBottom: 15, borderBottomWidth: 1, borderBottomColor: COLORES.tarjeta, backgroundColor: '#000000' },
   textoVolver: { color: COLORES.acento, fontSize: 16, fontWeight: 'bold' },
   tituloHeaderAjustes: { fontSize: 18, fontWeight: 'bold', color: COLORES.textoBlanco },
-  contenidoAjustes: { flex: 1, padding: 20 },
+  contenidoAjustes: { flex: 1, padding: 20, backgroundColor: '#000000' },
   zonaAvatar: { alignItems: 'center', marginBottom: 30, marginTop: 10 },
   avatarGrande: { width: 100, height: 100, borderRadius: 50, borderWidth: 3, borderColor: COLORES.primario },
   botonEditarFoto: { position: 'absolute', bottom: 0, right: 0, backgroundColor: COLORES.primario, width: 30, height: 30, borderRadius: 15, justifyContent: 'center', alignItems: 'center', borderWidth: 2, borderColor: COLORES.fondo },
