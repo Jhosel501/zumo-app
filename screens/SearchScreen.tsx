@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet, Platform, ActivityIndicator, Image } from 'react-native';
+import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet, Platform, ActivityIndicator, Image, StatusBar } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORES, FUENTES } from '../theme';
 import { supabase } from '../supabase';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import AvatarPlaceholder from '../components/AvatarPlaceholder';
 
 type Perfil = { id: string; username: string; avatar_url: string | null };
@@ -45,7 +44,7 @@ export default function SearchScreen({ onPressUser }: { onPressUser: (id: string
   }, [busqueda]);
 
   return (
-    <SafeAreaView style={styles.contenedorSafeArea}>
+    <View style={styles.contenedorSafeArea}>
       <View style={styles.contenedor}>
         <View style={styles.header}>
           <View style={styles.cajaBuscador}>
@@ -92,12 +91,12 @@ export default function SearchScreen({ onPressUser }: { onPressUser: (id: string
           )}
         />
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  contenedorSafeArea: { flex: 1, backgroundColor: '#000000', paddingTop: Platform.OS === 'android' ? 3 : 0 },
+  contenedorSafeArea: { flex: 1, backgroundColor: '#000000', paddingTop: Platform.OS === 'android' ? (StatusBar.currentHeight || 0) : 0 },
   contenedor: { flex: 1 },
   header: { paddingHorizontal: 15, paddingTop: 8, paddingBottom: 15, borderBottomWidth: 1, borderBottomColor: COLORES.tarjeta },
   cajaBuscador: { flexDirection: 'row', alignItems: 'center', backgroundColor: COLORES.tarjeta, borderRadius: 12, paddingHorizontal: 15, height: 45 },
