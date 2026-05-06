@@ -114,13 +114,13 @@ const styles = StyleSheet.create({
   },
   nick: {
     color: COLORES.textoBlanco,
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: 'bold',
     textAlign: 'center',
   },
   zumos: {
     color: COLORES.primario,
-    fontSize: 9,
+    fontSize: 11,
     fontWeight: 'bold',
   },
   lineaSeparadora: {
