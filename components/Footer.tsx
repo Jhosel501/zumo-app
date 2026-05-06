@@ -71,9 +71,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     backgroundColor: '#000000',
-    height: 70,
+    height: 55,
     borderTopWidth: 1,
     borderTopColor: '#1a1a1a',
-    paddingBottom: 8,
+    paddingBottom: 4,
   },
 });
