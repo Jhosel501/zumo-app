@@ -29,11 +29,13 @@ export default function PodioFeed({ listaRanking }: PodioProps) {
     return (
       <View style={[styles.escalon, { width: size + 30 }]}>
         <View style={[styles.contenedorAvatar, { width: size, height: size, borderColor: colorBorde }]}>
-          {avatar ? (
-            <Image source={{ uri: avatar }} style={{ width: '100%', height: '100%' }} />
-          ) : (
-            <AvatarPlaceholder size={size} />
-          )}
+          <View style={styles.circuloAvatar}>
+            {avatar ? (
+              <Image source={{ uri: avatar }} style={{ width: '100%', height: '100%' }} />
+            ) : (
+              <AvatarPlaceholder size={size} />
+            )}
+          </View>
           {/* El circulito con el número de posición */}
           <View style={[styles.medalla, { backgroundColor: colorBorde }]}>
             <Text style={styles.textoMedalla}>{puesto}</Text>
@@ -86,6 +88,11 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     justifyContent: 'center',
     alignItems: 'center',
+    borderRadius: 999,
+  },
+  circuloAvatar: {
+    width: '100%',
+    height: '100%',
     borderRadius: 999,
     overflow: 'hidden',
   },

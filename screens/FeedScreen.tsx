@@ -100,13 +100,14 @@ export default function FeedScreen({
 // Solo dejamos los estilos generales de la pantalla
 const styles = StyleSheet.create({
   contenedor: { flex: 1, backgroundColor: COLORES.fondo },
-  header: { 
-    height: 60, 
-    justifyContent: 'flex-end', 
-    alignItems: 'center', 
-    paddingBottom: 10, 
-    borderBottomWidth: 1, 
-    borderBottomColor: COLORES.tarjeta 
+  header: {
+    height: 60,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    paddingBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORES.tarjeta,
+    backgroundColor: '#000000',
   },
   // Le damos un ancho y alto fijos al contenedor para que el degradado se pinte bien
   contenedorTitulo: {
