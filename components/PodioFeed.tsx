@@ -62,7 +62,7 @@ export default function PodioFeed({ listaRanking }: PodioProps) {
 const styles = StyleSheet.create({
   contenedorPodio: {
     paddingTop: 20,
-    backgroundColor: COLORES.fondo,
+    backgroundColor: '#000000',
     alignItems: 'center',
   },
   tituloPodio: {
@@ -86,6 +86,8 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     justifyContent: 'center',
     alignItems: 'center',
+    borderRadius: 999,
+    overflow: 'hidden',
   },
   medalla: {
     position: 'absolute',
