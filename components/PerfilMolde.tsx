@@ -212,7 +212,7 @@ export default function PerfilMolde({
 }
 
 const styles = StyleSheet.create({
-  contenedor: { flex: 1, backgroundColor: COLORES.fondo },
+  contenedor: { flex: 1, backgroundColor: '#000000' },
   headerPerfil: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingTop: 10, paddingBottom: 15 },
   usernameHeader: { fontSize: 22, fontWeight: 'bold', color: COLORES.textoBlanco },
   botonAjustes: { padding: 5 },

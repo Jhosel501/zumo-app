@@ -99,7 +99,7 @@ export default function FeedScreen({
 
 // Solo dejamos los estilos generales de la pantalla
 const styles = StyleSheet.create({
-  contenedor: { flex: 1, backgroundColor: COLORES.fondo },
+  contenedor: { flex: 1, backgroundColor: '#000000' },
   header: {
     height: 50,
     justifyContent: 'flex-end',

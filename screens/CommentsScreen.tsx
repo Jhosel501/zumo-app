@@ -150,7 +150,7 @@ export default function CommentsScreen({ publicacionId, currentUserId, onVolver 
 }
 
 const styles = StyleSheet.create({
-  contenedor: { flex: 1, backgroundColor: COLORES.fondo },
+  contenedor: { flex: 1, backgroundColor: '#000000' },
   header: {
     flexDirection: 'row',
     alignItems: 'center',

@@ -34,7 +34,7 @@ export default function SinglePostScreen({ foto, listaRanking, onVolver, onPress
 }
 
 const styles = StyleSheet.create({
-  contenedor: { flex: 1, backgroundColor: COLORES.fondo },
+  contenedor: { flex: 1, backgroundColor: '#000000' },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingTop: 10, paddingBottom: 15, borderBottomWidth: 1, borderBottomColor: COLORES.tarjeta },
   botonVolver: { paddingVertical: 5 },
   textoVolver: { color: COLORES.acento, fontSize: 16, fontWeight: 'bold' },

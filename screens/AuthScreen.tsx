@@ -106,8 +106,8 @@ export default function AuthScreen() {
 const styles = StyleSheet.create({
   contenedor: { 
     flex: 1, 
-    backgroundColor: COLORES.fondo, 
-    justifyContent: 'center', 
+    backgroundColor: '#000000',
+    justifyContent: 'center',
     padding: 20 
   },
   cajaFormulario: { 

@@ -327,8 +327,8 @@ export default function ProfileScreen({ session, onPressFoto }: ProfileProps) {
 }
 
 const styles = StyleSheet.create({
-  contenedor: { flex: 1, backgroundColor: COLORES.fondo },
-  contenedorCentro: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: COLORES.fondo },
+  contenedor: { flex: 1, backgroundColor: '#000000' },
+  contenedorCentro: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#000000' },
   headerAjustes: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingTop: 12, paddingBottom: 15, borderBottomWidth: 1, borderBottomColor: COLORES.tarjeta, backgroundColor: '#000000' },
   textoVolver: { color: COLORES.acento, fontSize: 16, fontWeight: 'bold' },
   tituloHeaderAjustes: { fontSize: 18, fontWeight: 'bold', color: COLORES.textoBlanco },
