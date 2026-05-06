@@ -345,7 +345,7 @@ export default function App() {
             <CommentsScreen
               publicacionId={postComentarios}
               currentUserId={session.user.id}
-              onVolver={() => setVistaActual('feed')}
+              onVolver={() => { setVistaActual('feed'); cargarFeed(true); }}
             />
           </View>
 
