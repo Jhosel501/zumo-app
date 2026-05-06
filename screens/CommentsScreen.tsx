@@ -137,14 +137,16 @@ export default function CommentsScreen({ publicacionId, currentUserId, onVolver 
           maxLength={500}
         />
         <TouchableOpacity
-          style={[styles.botonEnviar, (!texto.trim() || enviando) && styles.botonEnviarDisabled]}
           onPress={enviarComentario}
-          disabled={!texto.trim() || enviando}
+          disabled={enviando || !texto.trim()}
+          style={[styles.botonEnviar, (!texto.trim() || enviando) && { opacity: 0.4 }]}
         >
           {enviando ? (
-            <ActivityIndicator size="small" color="white" />
+            <ActivityIndicator color="white" size="small" />
           ) : (
-            <Text style={styles.textoEnviar}>→</Text>
+            <Svg width={16} height={16} viewBox="0 0 24 24" fill="none">
+              <Path d="M5 12h14M13 6l6 6-6 6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </Svg>
           )}
         </TouchableOpacity>
       </View>
@@ -208,10 +210,8 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 19,
-    backgroundColor: COLORES.primario,
-    justifyContent: 'center',
+    backgroundColor: '#FF5B37',
     alignItems: 'center',
+    justifyContent: 'center',
   },
-  botonEnviarDisabled: { opacity: 0.4 },
-  textoEnviar: { color: 'white', fontSize: 18, fontWeight: 'bold' },
 });
