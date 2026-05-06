@@ -14,14 +14,21 @@ interface TarjetaPostProps {
 }
 
 function formatTimeAgo(dateString: string): string {
-  const date = new Date(dateString.endsWith('Z') ? dateString : dateString + 'Z');
-  const diffMs = new Date().getTime() - date.getTime();
-  const mins = Math.floor(diffMs / 60000);
-  const hours = Math.floor(diffMs / 3600000);
-  const days = Math.floor(diffMs / 86400000);
-  if (mins < 60) return `hace ${mins}m`;
-  if (hours < 24) return `hace ${hours}h`;
-  return `hace ${days}d`;
+  try {
+    const normalized = dateString.replace(' ', 'T').replace(/(\+\d{2}:\d{2}|Z)?$/, 'Z');
+    const date = new Date(normalized);
+    if (isNaN(date.getTime())) return '';
+    const diffMs = new Date().getTime() - date.getTime();
+    const mins = Math.floor(diffMs / 60000);
+    const hours = Math.floor(diffMs / 3600000);
+    const days = Math.floor(diffMs / 86400000);
+    if (mins < 1) return 'ahora';
+    if (mins < 60) return `hace ${mins}m`;
+    if (hours < 24) return `hace ${hours}h`;
+    return `hace ${days}d`;
+  } catch {
+    return '';
+  }
 }
 
 export default function TarjetaPost({ item, listaRanking, onPressUser, currentUserId, onPressComment }: TarjetaPostProps) {
