@@ -101,10 +101,10 @@ export default function FeedScreen({
 const styles = StyleSheet.create({
   contenedor: { flex: 1, backgroundColor: COLORES.fondo },
   header: {
-    height: 60,
+    height: 40,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    paddingBottom: 10,
+    paddingBottom: 5,
     borderBottomWidth: 1,
     borderBottomColor: COLORES.tarjeta,
     backgroundColor: '#000000',
