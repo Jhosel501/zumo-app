@@ -150,39 +150,54 @@ export default function App() {
 
       if (error) throw error;
 
-      // Si nos han llegado fotos, le decimos a Supabase que las marque como vistas.
-      // NOTA: No usamos 'await' aquí a propósito. Dejamos que se ejecute en 
-      // segundo plano para no ralentizar la carga visual del Feed del usuario.
-      if (data && data.length > 0) {
-        const registrosVistas = data.map((foto: any) => ({
+      // Enrich feed items with likes data (user_has_liked + likes_count)
+      let feedData: any[] = data ?? [];
+      if (feedData.length > 0) {
+        const postIds = feedData.map((p: any) => p.id);
+        const { data: allLikes } = await supabase
+          .from('likes')
+          .select('publicacion_id, perfil_id')
+          .in('publicacion_id', postIds);
+
+        const likedSet = new Set(
+          (allLikes || [])
+            .filter((l: any) => l.perfil_id === session.user.id)
+            .map((l: any) => l.publicacion_id)
+        );
+        const countMap: Record<string, number> = {};
+        (allLikes || []).forEach((l: any) => {
+          countMap[l.publicacion_id] = (countMap[l.publicacion_id] || 0) + 1;
+        });
+        feedData = feedData.map((item: any) => ({
+          ...item,
+          user_has_liked: likedSet.has(item.id),
+          likes_count: countMap[item.id] ?? 0,
+        }));
+      }
+
+      // Mark posts as seen in the background
+      if (feedData.length > 0) {
+        const registrosVistas = feedData.map((foto: any) => ({
           usuario_id: session.user.id,
           publicacion_id: foto.id
         }));
-        
-        // upsert: inserta los datos, pero si ya existen (onConflict), no hace nada ni da error
         supabase.from('vistas_feed')
           .upsert(registrosVistas, { onConflict: 'usuario_id, publicacion_id' })
-          .then(); 
+          .then();
       }
 
-      // Si Supabase nos devuelve menos de 5 fotos, significa que hemos tocado fondo
-      if (data.length < FOTOS_POR_PAGINA) {
+      if (feedData.length < FOTOS_POR_PAGINA) {
         setHayMasFotos(false);
       }
 
       if (resetear) {
-        // Al resetear, limpiamos la lista usando la lógica pura de Supabase
-        setListaFeed(data || []);
+        setListaFeed(feedData);
       } else {
         setListaFeed(prev => {
-          // Juntamos las fotos que ya teníamos con las nuevas que acaban de llegar
-          const listaCombinada = [...prev, ...(data || [])];
-          
-          // Usamos Map para sobreescribir cualquier ID que intente repetirse
+          const listaCombinada = [...prev, ...feedData];
           const listaPurificada = Array.from(
             new Map(listaCombinada.map(item => [item.id, item])).values()
           );
-          
           return listaPurificada;
         });
         setPaginaActual(prev => prev + 1);

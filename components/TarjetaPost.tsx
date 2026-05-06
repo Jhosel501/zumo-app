@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import Svg, { Path } from 'react-native-svg';
 import AvatarPlaceholder from './AvatarPlaceholder';
 import { COLORES } from '../theme';
+import { supabase } from '../supabase';
 
 interface TarjetaPostProps {
   item: any;
@@ -20,17 +22,46 @@ function formatTimeAgo(dateString: string): string {
   return `hace ${days}d`;
 }
 
-export default function TarjetaPost({ item, listaRanking, onPressUser }: TarjetaPostProps) {
+export default function TarjetaPost({ item, listaRanking, onPressUser, currentUserId }: TarjetaPostProps) {
   const username = item.perfiles?.username || 'Anónimo';
   const avatar = item.perfiles?.avatar_url;
 
   const indice = listaRanking.findIndex(user => user.id === item.perfil_id);
   const puesto = indice !== -1 ? `#${indice + 1}` : '#-';
 
+  const [isLiked, setIsLiked] = useState<boolean>(item.user_has_liked ?? false);
+  const [likesCount, setLikesCount] = useState<number>(item.likes_count ?? 0);
+
+  const handleLike = async () => {
+    const prevLiked = isLiked;
+    const prevCount = likesCount;
+
+    setIsLiked(!prevLiked);
+    setLikesCount(prevLiked ? prevCount - 1 : prevCount + 1);
+
+    try {
+      if (prevLiked) {
+        const { error } = await supabase
+          .from('likes')
+          .delete()
+          .match({ publicacion_id: item.id, perfil_id: currentUserId });
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from('likes')
+          .insert({ publicacion_id: item.id, perfil_id: currentUserId });
+        if (error) throw error;
+      }
+    } catch {
+      setIsLiked(prevLiked);
+      setLikesCount(prevCount);
+    }
+  };
+
   return (
     <View style={styles.tarjetaPost}>
 
-      {/* HEADER: avatar + username | ranking position */}
+      {/* HEADER */}
       <View style={styles.cabeceraPost}>
         <TouchableOpacity style={styles.usuarioPost} onPress={() => onPressUser(item.perfil_id)}>
           {avatar ? (
@@ -46,17 +77,43 @@ export default function TarjetaPost({ item, listaRanking, onPressUser }: Tarjeta
       {/* PHOTO */}
       <Image source={{ uri: item.image_url }} style={styles.fotoPost} resizeMode="cover" />
 
-      {/* FOOTER: likes + comments | time ago */}
+      {/* FOOTER */}
       <View style={styles.footer}>
         <View style={styles.footerLeft}>
+
+          {/* LIKE BUTTON */}
+          <TouchableOpacity style={styles.accion} onPress={handleLike}>
+            <Svg width={20} height={20} viewBox="0 0 24 24">
+              {isLiked ? (
+                <Path
+                  d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                  fill="#FF5B37"
+                />
+              ) : (
+                <Path
+                  d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                  fill="none"
+                  stroke="#FF5B37"
+                  strokeWidth="2"
+                />
+              )}
+            </Svg>
+            {likesCount > 0 && <Text style={styles.countAccion}>{likesCount}</Text>}
+          </TouchableOpacity>
+
+          {/* COMMENT ICON (static) */}
           <View style={styles.accion}>
-            <Text style={styles.iconoAccion}>❤️</Text>
-            <Text style={styles.countAccion}>0</Text>
+            <Svg width={20} height={20} viewBox="0 0 24 24">
+              <Path
+                d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+                fill="none"
+                stroke="#666"
+                strokeWidth="2"
+                strokeLinejoin="round"
+              />
+            </Svg>
           </View>
-          <View style={styles.accion}>
-            <Text style={styles.iconoAccion}>💬</Text>
-            <Text style={styles.countAccion}>0</Text>
-          </View>
+
         </View>
         <Text style={styles.timeAgo}>
           {item.created_at ? formatTimeAgo(item.created_at) : ''}
@@ -106,14 +163,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 14,
   },
-  iconoAccion: {
-    fontSize: 15,
-    marginRight: 4,
-  },
   countAccion: {
     color: '#ffffff',
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: 'bold',
+    marginLeft: 5,
   },
   timeAgo: {
     color: '#555',
