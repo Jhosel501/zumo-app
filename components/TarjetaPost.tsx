@@ -10,6 +10,7 @@ interface TarjetaPostProps {
   listaRanking: any[];
   onPressUser: (user: string) => void;
   currentUserId: string;
+  onPressComment?: (publicacionId: string) => void;
 }
 
 function formatTimeAgo(dateString: string): string {
@@ -22,7 +23,7 @@ function formatTimeAgo(dateString: string): string {
   return `hace ${days}d`;
 }
 
-export default function TarjetaPost({ item, listaRanking, onPressUser, currentUserId }: TarjetaPostProps) {
+export default function TarjetaPost({ item, listaRanking, onPressUser, currentUserId, onPressComment }: TarjetaPostProps) {
   const username = item.perfiles?.username || 'Anónimo';
   const avatar = item.perfiles?.avatar_url;
 
@@ -31,6 +32,7 @@ export default function TarjetaPost({ item, listaRanking, onPressUser, currentUs
 
   const [isLiked, setIsLiked] = useState<boolean>(item.user_has_liked ?? false);
   const [likesCount, setLikesCount] = useState<number>(item.likes_count ?? 0);
+  const commentsCount: number = item.comments_count ?? 0;
 
   const handleLike = async () => {
     const prevLiked = isLiked;
@@ -101,8 +103,8 @@ export default function TarjetaPost({ item, listaRanking, onPressUser, currentUs
             {likesCount > 0 && <Text style={styles.countAccion}>{likesCount}</Text>}
           </TouchableOpacity>
 
-          {/* COMMENT ICON (static) */}
-          <View style={styles.accion}>
+          {/* COMMENT ICON */}
+          <TouchableOpacity style={styles.accion} onPress={() => onPressComment?.(item.id)}>
             <Svg width={20} height={20} viewBox="0 0 24 24">
               <Path
                 d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
@@ -112,7 +114,8 @@ export default function TarjetaPost({ item, listaRanking, onPressUser, currentUs
                 strokeLinejoin="round"
               />
             </Svg>
-          </View>
+            {commentsCount > 0 && <Text style={styles.countAccion}>{commentsCount}</Text>}
+          </TouchableOpacity>
 
         </View>
         <Text style={styles.timeAgo}>

@@ -12,19 +12,21 @@ interface FeedProps {
   cargarMas: (reset: boolean) => void;
   cargandoMas: boolean;
   hayMasFotos: boolean;
-  onPressUser: (userId: string) => void; // función para manejar el click en el usuario desde la tarjeta del feed
+  onPressUser: (userId: string) => void;
   currentUserId: string;
+  onPressComment: (publicacionId: string) => void;
 }
 
-export default function FeedScreen({ 
-  listaFeed, 
-  listaRanking, 
-  cargandoFeed, 
-  cargarMas, 
-  cargandoMas, 
+export default function FeedScreen({
+  listaFeed,
+  listaRanking,
+  cargandoFeed,
+  cargarMas,
+  cargandoMas,
   hayMasFotos,
-  currentUserId ,
-  onPressUser
+  currentUserId,
+  onPressUser,
+  onPressComment,
 }: FeedProps) {
 
   return (
@@ -81,11 +83,12 @@ export default function FeedScreen({
 
           // Pasamos la función onPressUser a cada tarjeta del feed para que puedan manejar el click en el usuario
           renderItem={({ item }) => (
-            <TarjetaPost 
-            item={item} 
-            listaRanking={listaRanking} 
-            onPressUser={onPressUser}
-            currentUserId={currentUserId}
+            <TarjetaPost
+              item={item}
+              listaRanking={listaRanking}
+              onPressUser={onPressUser}
+              currentUserId={currentUserId}
+              onPressComment={onPressComment}
             />
           )}
         />

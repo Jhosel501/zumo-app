@@ -17,11 +17,12 @@ import FeedScreen from './screens/FeedScreen';
 import PublicProfileScreen from './screens/PublicProfileScreen';
 import SinglePostScreen from './screens/SinglePostScreen';
 import SearchScreen from './screens/SearchScreen';
+import CommentsScreen from './screens/CommentsScreen';
 
 
 export default function App() {
   const [permiso, pedirPermiso] = useCameraPermissions();
-  const [vistaActual, setVistaActual] = useState<'feed' | 'ranking' | 'camara' |'search'| 'perfil' | 'perfilPublico' | 'fotoDetalle'>('feed'); //Cambiar si se añade nueva vista accesible desde el footer
+  const [vistaActual, setVistaActual] = useState<'feed' | 'ranking' | 'camara' | 'search' | 'perfil' | 'perfilPublico' | 'fotoDetalle' | 'comentarios'>('feed'); //Cambiar si se añade nueva vista accesible desde el footer
   
   // Variables para recordar a quién visitamos y de dónde venimos
   const [usuarioVisitado, setUsuarioVisitado] = useState<string | null>(null);
@@ -30,6 +31,12 @@ export default function App() {
   // Variables para el detalle de la foto
   const [fotoSeleccionada, setFotoSeleccionada] = useState<any>(null);
   const [vistaAnteriorFoto, setVistaAnteriorFoto] = useState<'perfil' | 'perfilPublico'>('perfil');
+  const [postComentarios, setPostComentarios] = useState<string | null>(null);
+
+  const irAComentarios = (publicacionId: string) => {
+    setPostComentarios(publicacionId);
+    setVistaActual('comentarios');
+  };
 
   // Función inteligente para navegar a los perfiles
   const irAPerfil = (userId: string) => {
@@ -168,10 +175,22 @@ export default function App() {
         (allLikes || []).forEach((l: any) => {
           countMap[l.publicacion_id] = (countMap[l.publicacion_id] || 0) + 1;
         });
+        const { data: allComments } = await supabase
+          .from('comentarios')
+          .select('publicacion_id')
+          .in('publicacion_id', postIds)
+          .is('deleted_at', null);
+
+        const commentCountMap: Record<string, number> = {};
+        (allComments || []).forEach((c: any) => {
+          commentCountMap[c.publicacion_id] = (commentCountMap[c.publicacion_id] || 0) + 1;
+        });
+
         feedData = feedData.map((item: any) => ({
           ...item,
           user_has_liked: likedSet.has(item.id),
           likes_count: countMap[item.id] ?? 0,
+          comments_count: commentCountMap[item.id] ?? 0,
         }));
       }
 
@@ -321,17 +340,27 @@ export default function App() {
             <Footer vistaActual={vistaActual} setVistaActual={setVistaActual} />
           </View>
 
+        ) : vistaActual === 'comentarios' && postComentarios ? (
+          <View style={{ flex: 1 }}>
+            <CommentsScreen
+              publicacionId={postComentarios}
+              currentUserId={session.user.id}
+              onVolver={() => setVistaActual('feed')}
+            />
+          </View>
+
         ) : ( // RUTA POR DEFECTO (FEED)
           <View style={{ flex: 1 }}>
-            <FeedScreen 
-              listaFeed={listaFeed} 
-              listaRanking={listaRanking} 
-              cargandoFeed={cargandoFeed} // Necesitamos este estado para la rueda
-              cargarMas={(reset) => cargarFeed(reset)} // Ahora acepta el parámetro de reset
+            <FeedScreen
+              listaFeed={listaFeed}
+              listaRanking={listaRanking}
+              cargandoFeed={cargandoFeed}
+              cargarMas={(reset) => cargarFeed(reset)}
               cargandoMas={cargandoMas}
               hayMasFotos={hayMasFotos}
               onPressUser={irAPerfil}
-              currentUserId={session.user.id} // Pasamos el ID del usuario actual al feed
+              currentUserId={session.user.id}
+              onPressComment={irAComentarios}
             />
             <Footer vistaActual={vistaActual} setVistaActual={setVistaActual} />
           </View>
