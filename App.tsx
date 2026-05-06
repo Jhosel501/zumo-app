@@ -293,11 +293,13 @@ export default function App() {
 
         ) : vistaActual === 'fotoDetalle' && fotoSeleccionada ? (
           <View style={{ flex: 1 }}>
-            <SinglePostScreen 
+            <SinglePostScreen
               foto={fotoSeleccionada}
               listaRanking={listaRanking}
               onVolver={() => setVistaActual(vistaAnteriorFoto)}
               onPressUser={irAPerfil}
+              currentUserId={session.user.id}
+              onPressComment={irAComentarios}
             />
           </View>
 
