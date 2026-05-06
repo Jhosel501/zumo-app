@@ -69,11 +69,8 @@ export default function TarjetaPost({ item, listaRanking, onPressUser }: Tarjeta
 
 const styles = StyleSheet.create({
   tarjetaPost: {
-    backgroundColor: COLORES.tarjeta,
-    marginBottom: 20,
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: '#3d4653',
+    backgroundColor: '#000000',
+    marginBottom: 12,
   },
   cabeceraPost: {
     flexDirection: 'row',
