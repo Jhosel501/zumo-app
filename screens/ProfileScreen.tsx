@@ -329,7 +329,7 @@ export default function ProfileScreen({ session, onPressFoto }: ProfileProps) {
 const styles = StyleSheet.create({
   contenedor: { flex: 1, backgroundColor: COLORES.fondo },
   contenedorCentro: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: COLORES.fondo },
-  headerAjustes: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingBottom: 15, borderBottomWidth: 1, borderBottomColor: COLORES.tarjeta },
+  headerAjustes: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingTop: 12, paddingBottom: 15, borderBottomWidth: 1, borderBottomColor: COLORES.tarjeta },
   textoVolver: { color: COLORES.acento, fontSize: 16, fontWeight: 'bold' },
   tituloHeaderAjustes: { fontSize: 18, fontWeight: 'bold', color: COLORES.textoBlanco },
   contenidoAjustes: { flex: 1, padding: 20 },
