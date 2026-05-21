@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useRef, useState } from 'react';
+import { View, Text, Image, StyleSheet, TouchableOpacity, Modal, TouchableWithoutFeedback, Dimensions, Alert } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import AvatarPlaceholder from './AvatarPlaceholder';
 import { COLORES } from '../theme';
@@ -37,6 +37,61 @@ export default function TarjetaPost({ item, listaRanking, onPressUser, currentUs
 
   const indice = listaRanking.findIndex(user => user.id === item.perfil_id);
   const puesto = indice !== -1 ? `#${indice + 1}` : '#-';
+
+  const menuButtonRef = useRef<View>(null);
+  const [menuVisible, setMenuVisible] = useState(false);
+  const [menuPos, setMenuPos] = useState<{ top: number; right: number }>({ top: 0, right: 0 });
+  const [denunciarVisible, setDenunciarVisible] = useState(false);
+
+  const handleMenuPress = () => {
+    menuButtonRef.current?.measure((_x, _y, width, height, pageX, pageY) => {
+      setMenuPos({
+        top: pageY + height + 4,
+        right: Dimensions.get('window').width - pageX - width,
+      });
+      setMenuVisible(true);
+    });
+  };
+  const enviarReporte = async (motivo: string) => {
+    console.log('[Reporte] Iniciando reporte:', { reportador_id: currentUserId, publicacion_id: item.id, motivo });
+
+    const { data: existente, error: errorExistente } = await supabase
+      .from('reportes')
+      .select('id')
+      .match({ reportador_id: currentUserId, publicacion_id: item.id })
+      .eq('estado', 'pendiente')
+      .maybeSingle();
+
+    if (errorExistente) {
+      console.error('[Reporte] Error comprobando duplicado:', errorExistente);
+    }
+
+    if (existente) {
+      console.log('[Reporte] Ya existe un reporte previo:', existente);
+      Alert.alert('Ya reportaste esta publicación');
+      return;
+    }
+
+    const { data, error } = await supabase.from('reportes').insert({
+      reportador_id: currentUserId,
+      publicacion_id: item.id,
+      motivo,
+      estado: 'pendiente',
+      tipo: 'publicacion',
+    });
+
+    if (error) {
+      console.error('[Reporte] Error insertando reporte:', error);
+    } else {
+      console.log('[Reporte] Reporte insertado correctamente:', data);
+      Alert.alert('Reporte enviado', 'Revisaremos el contenido en breve.');
+    }
+  };
+
+  const handleDenunciar = () => {
+    setMenuVisible(false);
+    setDenunciarVisible(true);
+  };
 
   const [isLiked, setIsLiked] = useState<boolean>(item.user_has_liked ?? false);
   const [likesCount, setLikesCount] = useState<number>(item.likes_count ?? 0);
@@ -80,8 +135,28 @@ export default function TarjetaPost({ item, listaRanking, onPressUser, currentUs
             <AvatarPlaceholder size={28} style={{ marginRight: 10 }} />
           )}
           <Text style={styles.nombreUsuario}>{username}</Text>
+          <Text style={styles.puestoTexto}>{puesto}</Text>
         </TouchableOpacity>
-        <Text style={styles.puestoTexto}>{puesto}</Text>
+
+        <View ref={menuButtonRef} collapsable={false}>
+          <TouchableOpacity onPress={handleMenuPress} style={styles.menuBoton}>
+            <Text style={styles.menuPuntos}>⋯</Text>
+          </TouchableOpacity>
+        </View>
+
+        <Modal transparent visible={menuVisible} animationType="fade" onRequestClose={() => setMenuVisible(false)}>
+          <TouchableWithoutFeedback onPress={() => setMenuVisible(false)}>
+            <View style={styles.menuOverlay}>
+              <TouchableWithoutFeedback>
+                <View style={[styles.menuDropdown, { top: menuPos.top, right: menuPos.right }]}>
+                  <TouchableOpacity onPress={handleDenunciar} style={styles.menuOpcion}>
+                    <Text style={styles.menuDenunciar}>Denunciar</Text>
+                  </TouchableOpacity>
+                </View>
+              </TouchableWithoutFeedback>
+            </View>
+          </TouchableWithoutFeedback>
+        </Modal>
       </View>
 
       {/* PHOTO */}
@@ -131,6 +206,34 @@ export default function TarjetaPost({ item, listaRanking, onPressUser, currentUs
         </Text>
       </View>
 
+      {/* DENUNCIAR MODAL */}
+      <Modal transparent visible={denunciarVisible} animationType="fade" onRequestClose={() => setDenunciarVisible(false)}>
+        <TouchableWithoutFeedback onPress={() => setDenunciarVisible(false)}>
+          <View style={styles.denunciarOverlay}>
+            <TouchableWithoutFeedback>
+              <View style={styles.denunciarCard}>
+                <Text style={styles.denunciarTitulo}>Denunciar publicación</Text>
+                <Text style={styles.denunciarSubtitulo}>¿Por qué quieres denunciar?</Text>
+
+                {(['Contenido inapropiado', 'Spam', 'Acoso', 'Otro'] as const).map((motivo) => (
+                  <TouchableOpacity
+                    key={motivo}
+                    style={styles.denunciarOpcion}
+                    onPress={() => { setDenunciarVisible(false); enviarReporte(motivo); }}
+                  >
+                    <Text style={styles.denunciarOpcionTexto}>{motivo}</Text>
+                  </TouchableOpacity>
+                ))}
+
+                <TouchableOpacity style={styles.denunciarCancelar} onPress={() => setDenunciarVisible(false)}>
+                  <Text style={styles.denunciarCancelarTexto}>Cancelar</Text>
+                </TouchableOpacity>
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
+
     </View>
   );
 }
@@ -156,7 +259,23 @@ const styles = StyleSheet.create({
     borderColor: COLORES.primario,
   },
   nombreUsuario: { color: COLORES.textoBlanco, fontSize: 14, fontWeight: 'bold' },
-  puestoTexto: { color: COLORES.acento, fontSize: 15, fontWeight: '900' },
+  puestoTexto: { color: COLORES.acento, fontSize: 13, fontWeight: '900', marginLeft: 6 },
+  menuBoton: { paddingHorizontal: 8, paddingVertical: 4 },
+  menuPuntos: { color: '#888', fontSize: 20, letterSpacing: 2 },
+  menuOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.3)' },
+  menuDropdown: {
+    position: 'absolute',
+    backgroundColor: '#1c1c1e',
+    borderRadius: 10,
+    minWidth: 140,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.6,
+    shadowRadius: 8,
+    elevation: 12,
+  },
+  menuOpcion: { paddingVertical: 13, paddingHorizontal: 18 },
+  menuDenunciar: { color: '#FF3B30', fontSize: 15, fontWeight: '600' },
   fotoPost: { width: '100%', aspectRatio: 4 / 5, backgroundColor: 'black' },
   footer: {
     flexDirection: 'row',
@@ -183,5 +302,55 @@ const styles = StyleSheet.create({
   timeAgo: {
     color: '#555',
     fontSize: 12,
+  },
+  denunciarOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.85)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 24,
+  },
+  denunciarCard: {
+    width: '100%',
+    backgroundColor: '#111',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#222',
+    overflow: 'hidden',
+  },
+  denunciarTitulo: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 4,
+  },
+  denunciarSubtitulo: {
+    color: '#555',
+    fontSize: 13,
+    paddingHorizontal: 20,
+    paddingBottom: 12,
+  },
+  denunciarOpcion: {
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderTopWidth: 1,
+    borderTopColor: '#222',
+  },
+  denunciarOpcionTexto: {
+    color: '#FF5B37',
+    fontSize: 15,
+  },
+  denunciarCancelar: {
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderTopWidth: 2,
+    borderTopColor: '#222',
+    alignItems: 'center',
+  },
+  denunciarCancelarTexto: {
+    color: '#555',
+    fontSize: 15,
   },
 });
