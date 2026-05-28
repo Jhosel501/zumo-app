@@ -68,7 +68,7 @@ export default function FeedScreen({
           onEndReachedThreshold={0.5}
           // Ahora el podio del feed es un header, para que siempre esté visible al principio
           ListHeaderComponent={() => (
-            <PodioFeed listaRanking={listaRanking} />
+            <PodioFeed listaRanking={listaRanking} onPressUser={onPressUser} />
           )}
           // Y el footer se encarga de mostrar el indicador de carga o el mensaje de "no hay más fotos"
           ListFooterComponent={() => (

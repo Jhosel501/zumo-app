@@ -1,12 +1,13 @@
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { COLORES } from '../theme';
 import AvatarPlaceholder from './AvatarPlaceholder';
 
 interface PodioProps {
   listaRanking: any[];
+  onPressUser: (userId: string) => void;
 }
 
-export default function PodioFeed({ listaRanking }: PodioProps) {
+export default function PodioFeed({ listaRanking, onPressUser }: PodioProps) {
   // Cortamos la lista para quedarnos solo con los 3 primeros
   const top3 = listaRanking.slice(0, 3);
   
@@ -27,7 +28,7 @@ export default function PodioFeed({ listaRanking }: PodioProps) {
     const username = usuario.username || 'Anónimo';
 
     return (
-      <View style={[styles.escalon, { width: size + 30 }]}>
+      <TouchableOpacity style={[styles.escalon, { width: size + 30 }]} onPress={() => onPressUser(usuario.id)} activeOpacity={0.7}>
         <View style={[styles.contenedorAvatar, { width: size, height: size, borderColor: colorBorde }]}>
           <View style={styles.circuloAvatar}>
             {avatar ? (
@@ -43,7 +44,7 @@ export default function PodioFeed({ listaRanking }: PodioProps) {
         </View>
         <Text style={styles.nick} numberOfLines={1}>{username}</Text>
         <Text style={styles.zumos}>{usuario.total_zumos || 0} Zumos</Text>
-      </View>
+      </TouchableOpacity>
     );
   };
 

@@ -317,11 +317,10 @@ export default function App() {
 
         ) : vistaActual === 'ranking' ? ( 
           <View style={{ flex: 1 }}>
-            <RankingScreen 
-              listaRanking={listaRanking} 
-              cargandoRanking={cargandoRanking} 
-              // Opcional: Si quieres que desde el ranking también se pueda ir al perfil
-              // onPressUser={irAPerfil} 
+            <RankingScreen
+              listaRanking={listaRanking}
+              cargandoRanking={cargandoRanking}
+              onPressUser={irAPerfil}
             />
             <Footer vistaActual={vistaActual} setVistaActual={setVistaActual} />
           </View>

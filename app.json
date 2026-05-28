@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "mi-app-cubatas",
-    "slug": "mi-app-cubatas",
+    "name": "Zumo",
+    "slug": "zumo-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -22,7 +22,7 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.jhosel.miappcubatas"
+      "package": "com.zumo.app"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -32,8 +32,9 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "d0df639a-347b-4f65-84c8-0a9be806f00b"
+        "projectId": "486e4d47-6eb1-465a-b850-7cbdd2078825"
       }
-    }
+    },
+    "owner": "mxxrcoos"
   }
 }

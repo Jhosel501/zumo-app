@@ -1,13 +1,14 @@
-import { View, Text, FlatList, Image, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, Text, FlatList, Image, ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
 import { COLORES, FUENTES } from '../theme';
 import AvatarPlaceholder from '../components/AvatarPlaceholder';
 
 interface RankingProps {
   listaRanking: any[];
   cargandoRanking: boolean;
+  onPressUser: (userId: string) => void;
 }
 
-export default function RankingScreen({ listaRanking, cargandoRanking }: RankingProps) {
+export default function RankingScreen({ listaRanking, cargandoRanking, onPressUser }: RankingProps) {
   return (
     <View style={styles.contenedor}>
       <View style={styles.header}>
@@ -33,17 +34,17 @@ export default function RankingScreen({ listaRanking, cargandoRanking }: Ranking
               const colorPosicion = index === 0 ? '#ffd700' : index === 1 ? '#c0c0c0' : index === 2 ? '#cd7f32' : COLORES.secundario;
               
               return (
-                <View style={styles.tarjeta}>
-                  
+                <TouchableOpacity style={styles.tarjeta} onPress={() => onPressUser(item.id)} activeOpacity={0.7}>
+
                   <View style={styles.ladoIzquierdo}>
                     <Text style={[styles.posicion, { color: colorPosicion }]}>#{index + 1}</Text>
-                    
+
                     {avatar ? (
                       <Image source={{ uri: avatar }} style={styles.avatar} />
                     ) : (
                       <AvatarPlaceholder size={40} style={{ marginRight: 12 }} />
                     )}
-                    
+
                     <Text style={styles.nombreTarjeta}>{username}</Text>
                   </View>
 
@@ -51,8 +52,8 @@ export default function RankingScreen({ listaRanking, cargandoRanking }: Ranking
                     <Text style={styles.numeroZumos}>{puntos}</Text>
                     <Text style={styles.textoZumos}>{puntos === 1 ? 'Zumo' : 'Zumos'}</Text>
                   </View>
-                  
-                </View>
+
+                </TouchableOpacity>
               );
             }}
           />

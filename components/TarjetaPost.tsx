@@ -42,6 +42,7 @@ export default function TarjetaPost({ item, listaRanking, onPressUser, currentUs
   const [menuVisible, setMenuVisible] = useState(false);
   const [menuPos, setMenuPos] = useState<{ top: number; right: number }>({ top: 0, right: 0 });
   const [denunciarVisible, setDenunciarVisible] = useState(false);
+  const [confirmacionVisible, setConfirmacionVisible] = useState(false);
 
   const handleMenuPress = () => {
     menuButtonRef.current?.measure((_x, _y, width, height, pageX, pageY) => {
@@ -84,7 +85,7 @@ export default function TarjetaPost({ item, listaRanking, onPressUser, currentUs
       console.error('[Reporte] Error insertando reporte:', error);
     } else {
       console.log('[Reporte] Reporte insertado correctamente:', data);
-      Alert.alert('Reporte enviado', 'Revisaremos el contenido en breve.');
+      setConfirmacionVisible(true);
     }
   };
 
@@ -205,6 +206,20 @@ export default function TarjetaPost({ item, listaRanking, onPressUser, currentUs
           {item.created_at ? formatTimeAgo(item.created_at) : ''}
         </Text>
       </View>
+
+      {/* CONFIRMACION REPORTE MODAL */}
+      <Modal transparent visible={confirmacionVisible} animationType="fade" onRequestClose={() => setConfirmacionVisible(false)}>
+        <View style={styles.confirmOverlay}>
+          <View style={styles.confirmCard}>
+            <Text style={styles.confirmIcono}>✅</Text>
+            <Text style={styles.confirmTitulo}>Reporte enviado</Text>
+            <Text style={styles.confirmSubtitulo}>Revisaremos el contenido en breve.</Text>
+            <TouchableOpacity style={styles.confirmBoton} onPress={() => setConfirmacionVisible(false)}>
+              <Text style={styles.confirmBotonTexto}>OK</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
 
       {/* DENUNCIAR MODAL */}
       <Modal transparent visible={denunciarVisible} animationType="fade" onRequestClose={() => setDenunciarVisible(false)}>
@@ -352,5 +367,50 @@ const styles = StyleSheet.create({
   denunciarCancelarTexto: {
     color: '#555',
     fontSize: 15,
+  },
+  confirmOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.9)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 24,
+  },
+  confirmCard: {
+    width: '100%',
+    backgroundColor: '#111',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#222',
+    padding: 24,
+    alignItems: 'center',
+  },
+  confirmIcono: {
+    fontSize: 40,
+    marginBottom: 16,
+  },
+  confirmTitulo: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  confirmSubtitulo: {
+    color: '#555',
+    fontSize: 13,
+    textAlign: 'center',
+    marginBottom: 24,
+  },
+  confirmBoton: {
+    width: '100%',
+    backgroundColor: '#FF5B37',
+    borderRadius: 8,
+    padding: 10,
+    alignItems: 'center',
+  },
+  confirmBotonTexto: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '600',
   },
 });
