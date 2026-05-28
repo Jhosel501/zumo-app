@@ -31,6 +31,8 @@
       "expo-font"
     ],
     "extra": {
+      "supabaseUrl": "https://fitdumgnaqmoxdvdczhb.supabase.co",
+      "supabaseKey": "sb_publishable_xjABljq9sGLjpEqdMt3ydw_Su9yDESM",
       "eas": {
         "projectId": "486e4d47-6eb1-465a-b850-7cbdd2078825"
       }
