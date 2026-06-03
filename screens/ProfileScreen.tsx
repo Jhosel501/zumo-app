@@ -47,10 +47,10 @@ export default function ProfileScreen({ session, onPressFoto }: ProfileProps) {
         .from('invitaciones')
         .select('codigo, usos_restantes')
         .eq('creador_id', session?.user?.id)
-        .gt('usos_restantes', 0);
+        .single();
 
-      if (data && data.length > 0) {
-        setInvitacion({ codigo: data[0].codigo, usos: data.length });
+      if (data) {
+        setInvitacion({ codigo: data.codigo, usos: data.usos_restantes });
       } else {
         console.log("No encontró nada. Error:", error);
       }
