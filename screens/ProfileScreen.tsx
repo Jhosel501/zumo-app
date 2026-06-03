@@ -47,12 +47,14 @@ export default function ProfileScreen({ session, onPressFoto }: ProfileProps) {
         .from('invitaciones')
         .select('codigo, usos_restantes')
         .eq('creador_id', session?.user?.id)
-        .single();
+        .order('created_at', { ascending: true })
+        .limit(1)
+        .maybeSingle();
 
       if (data) {
         setInvitacion({ codigo: data.codigo, usos: data.usos_restantes });
       } else {
-        console.log("No encontró nada. Error:", error);
+        console.log("Sin invitaciones:", error);
       }
     } catch (error) {
       console.log("Error en la consulta:", error);
