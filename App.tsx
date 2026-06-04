@@ -19,7 +19,7 @@ import SinglePostScreen from './screens/SinglePostScreen';
 import SearchScreen from './screens/SearchScreen';
 import CommentsScreen from './screens/CommentsScreen';
 
-
+// --- EL CONTROLADOR PRINCIPAL (App) ---
 export default function App() {
   const [permiso, pedirPermiso] = useCameraPermissions();
   const [vistaActual, setVistaActual] = useState<'feed' | 'ranking' | 'camara' | 'search' | 'perfil' | 'perfilPublico' | 'fotoDetalle' | 'comentarios'>('feed'); //Cambiar si se añade nueva vista accesible desde el footer
@@ -59,7 +59,6 @@ export default function App() {
     setVistaActual('fotoDetalle');
   };
   
-
   // --- Cargador de Fuentes ---
   const [fuentesCargadas] = useFonts({
     // El nombre de la izquierda es como la llamarás en tu código.
